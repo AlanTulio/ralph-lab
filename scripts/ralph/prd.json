@@ -1,0 +1,70 @@
+{
+  "project": "Ralph Lab",
+  "branchName": "ralph/receita-regional",
+  "description": "Pipeline reprodutível de dados sintéticos: inner join com 420 linhas, receita 931274.06, pivot de quatro regiões por seis meses, gráfico estático e testes de invariantes.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Ler entradas e produzir inner join",
+      "description": "Como leitor do relatório, quero juntar vendas às lojas existentes para atribuir receita à região correta.",
+      "acceptanceCriteria": [
+        "Ler os CSVs originais sem editar ou excluir nenhuma linha de origem.",
+        "Gerar vendas_lojas.csv na raiz com exatamente 420 linhas de dados e coluna receita_brl.",
+        "Somar Decimal(receita_brl) e obter 931274.06; excluir três vendas id_loja=999 e documentar 8120.00 fora do relatório.",
+        "Registrar que loja 108 Batel não participa do inner join por não ter vendas.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Agregar receita por região e mês",
+      "description": "Como analista, quero conferir receitas mensais sem duplicar vendas.",
+      "acceptanceCriteria": [
+        "Gerar pivot_receita.csv na raiz com cabeçalho exato regiao,2026-01,2026-02,2026-03,2026-04,2026-05,2026-06.",
+        "Entregar quatro regiões e seis meses, números com ponto decimal e duas casas, sem símbolo monetário.",
+        "Conservar o total 931274.06 e identificar Sudeste como líder com 265077.49.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Publicar gráfico estático e concluir",
+      "description": "Como leitor, quero visualizar a receita mensal e entender o limite da cobertura.",
+      "acceptanceCriteria": [
+        "Gerar index.html na raiz com gráfico SVG rotulado, seis meses e quatro séries de região.",
+        "Incluir parágrafo de conclusão de pelo menos 300 caracteres ancorado nos números produzidos.",
+        "A conclusão deve distinguir loja sem venda das vendas sem loja e não afirmar que a receita descartada era zero.",
+        "Verificar a página no Chromium do Playwright; dev-browser não está instalado neste ambiente.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Concluir verificações reproduzíveis",
+      "description": "Como aluno, quero saber quando o pipeline está pronto por evidências verificáveis.",
+      "acceptanceCriteria": [
+        "Pelo menos quatro testes reais em tests/test_*.py devem passar em python -m pytest -q.",
+        "Testar contagem e receita do join, cabeçalho e forma do pivot, conservação da receita e gráfico.",
+        "Garantir execução repetida produzindo os mesmos três arquivos e registrar comandos e resultados no progress.txt.",
+        "Só emitir COMPLETE após todas as histórias e verificações concluídas; não inventar falhas nem relatos do aluno.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
