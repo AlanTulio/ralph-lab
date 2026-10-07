@@ -2097,3 +2097,2397 @@ US-002 concluída: `pivot_receita.csv` gerado com quatro regiões e seis meses, 
 Validação: **5 testes passaram**, `compileall` passou e os hashes das fontes foram preservados. PRD e progresso atualizados.
 
 Gráfico e verificações finais permanecem pendentes. Sem commit, conforme o contrato do ambiente.
+[ralph/receita-regional ae56ce0] feat: registra progresso real da iteração Ralph 2
+ 6 files changed, 1126 insertions(+), 5 deletions(-)
+ create mode 100644 pivot_receita.csv
+Iteration 2 complete. Continuing...
+
+===============================================================
+  Ralph Iteration 3 of 6 (codex)
+===============================================================
+Reading prompt from stdin...
+OpenAI Codex v0.160.1
+--------
+workdir: /home/alan/mestrado_agents/exercicios/ralph-lab
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: none
+reasoning summaries: none
+session id: 01a11650-fab0-7f12-97be-e6fdb9965569
+--------
+user
+# Ralph Agent Instructions
+
+You are an autonomous coding agent working on a software project.
+
+## Your Task
+
+1. Read the PRD at `prd.json` (in the same directory as this file)
+2. Read the progress log at `progress.txt` (check Codebase Patterns section first)
+3. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
+4. Pick the **highest priority** user story where `passes: false`
+5. Implement that single user story
+6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
+7. Update CLAUDE.md files if you discover reusable patterns (see below)
+8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
+9. Update the PRD to set `passes: true` for the completed story
+10. Append your progress to `progress.txt`
+
+## Progress Report Format
+
+APPEND to progress.txt (never replace, always append):
+```
+## [Date/Time] - [Story ID]
+- What was implemented
+- Files changed
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - Useful context (e.g., "the evaluation panel is in component X")
+---
+```
+
+The learnings section is critical - it helps future iterations avoid repeating mistakes and understand the codebase better.
+
+## Consolidate Patterns
+
+If you discover a **reusable pattern** that future iterations should know, add it to the `## Codebase Patterns` section at the TOP of progress.txt (create it if it doesn't exist). This section should consolidate the most important learnings:
+
+```
+## Codebase Patterns
+- Example: Use `sql<number>` template for aggregations
+- Example: Always use `IF NOT EXISTS` for migrations
+- Example: Export types from actions.ts for UI components
+```
+
+Only add patterns that are **general and reusable**, not story-specific details.
+
+## Update CLAUDE.md Files
+
+Before committing, check if any edited files have learnings worth preserving in nearby CLAUDE.md files:
+
+1. **Identify directories with edited files** - Look at which directories you modified
+2. **Check for existing CLAUDE.md** - Look for CLAUDE.md in those directories or parent directories
+3. **Add valuable learnings** - If you discovered something future developers/agents should know:
+   - API patterns or conventions specific to that module
+   - Gotchas or non-obvious requirements
+   - Dependencies between files
+   - Testing approaches for that area
+   - Configuration or environment requirements
+
+**Examples of good CLAUDE.md additions:**
+- "When modifying X, also update Y to keep them in sync"
+- "This module uses pattern Z for all API calls"
+- "Tests require the dev server running on PORT 3000"
+- "Field names must match the template exactly"
+
+**Do NOT add:**
+- Story-specific implementation details
+- Temporary debugging notes
+- Information already in progress.txt
+
+Only update CLAUDE.md if you have **genuinely reusable knowledge** that would help future work in that directory.
+
+## Quality Requirements
+
+- ALL commits must pass your project's quality checks (typecheck, lint, test)
+- Do NOT commit broken code
+- Keep changes focused and minimal
+- Follow existing code patterns
+
+## Browser Testing (If Available)
+
+For any story that changes UI, verify it works in the browser if you have browser testing tools configured (e.g., via MCP):
+
+1. Navigate to the relevant page
+2. Verify the UI changes work as expected
+3. Take a screenshot if helpful for the progress log
+
+If no browser tools are available, note in your progress report that manual browser verification is needed.
+
+## Stop Condition
+
+After completing a user story, check if ALL stories have `passes: true`.
+
+If ALL stories are complete and passing, reply with:
+<promise>COMPLETE</promise>
+
+If there are still stories with `passes: false`, end your response normally (another iteration will pick up the next story).
+
+## Important
+
+- Work on ONE story per iteration
+- Commit frequently
+- Keep CI green
+- Read the Codebase Patterns section in progress.txt before starting
+
+## Contrato preparado para este exercício
+
+Os testes tests/test_acceptance.py conferem os dados sintéticos originais e não devem ser removidos ou enfraquecidos para passar. Implemente os artefatos necessários para satisfazê-los. Os testes ainda não foram executados: preparar o contrato não é evidência de uma falha do agente. Use Python padrão e Decimal para receitas. Conserve as fontes. Relate falhas reais com a saída original e registre ajustes; não invente intervenções do aluno. O PRD está em scripts/ralph/prd.json e o registro em scripts/ralph/progress.txt a partir da raiz do repositório.
+
+## Execução Codex em Docker
+
+Você já está dentro do Docker; execute Python e pytest diretamente, sem invocar outro Docker. O sandbox permite arquivos do projeto mas protege .git. Não tente gravar .git nem fazer commit: o laço externo registra o progresso por iteração. Atualize prd.json e progress.txt somente após verificações reais. Há testes de aceitação preparados; enquanto histórias futuras não existem, execute os testes pertinentes à história atual e registre o recorte. Ao final, execute toda a suíte e confira os artefatos. Não execute autograde, não altere respostas pessoais e não invente intervenções do aluno. A inspeção em Chromium pode usar Playwright Python, disponível neste ambiente; registre uma captura real, sem acessar serviço pago. A branch já estará escolhida pelo orquestrador.
+
+warning: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+codex
+Vou ler o PRD e o registro, implementar uma única história pendente e executar os testes correspondentes. Usarei a skill `evidence-review` para conferir os resultados antes de atualizar o progresso.
+
+exec
+/usr/bin/bash -lc "pwd; rg --files -g 'AGENTS.md' -g 'CLAUDE.md' -g 'prd.json' -g 'progress.txt' -g 'README*' -g 'test*' -g 'pyproject.toml'; cat /home/alan/.agents/skills/evidence-review/SKILL.md" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+/home/alan/mestrado_agents/exercicios/ralph-lab
+scripts/ralph/progress.txt
+scripts/ralph/prd.json
+scripts/ralph/CLAUDE.md
+tests/test_acceptance.py
+README.md
+---
+name: evidence-review
+description: Conferir uma conclusão técnica contra arquivos e saídas reais antes de declarar uma tarefa concluída.
+---
+
+# Conferência de evidências
+
+Use quando o usuário pedir validação de um resultado ou quando uma conclusão técnica depender de execução.
+
+1. Identifique a afirmação e o resultado observável que a sustentaria.
+2. Consulte arquivos e comandos autorizados, preservando credenciais e dados originais.
+3. Diferencie fato, inferência e hipótese; identifique a fonte localizável.
+4. Execute a verificação pertinente em Docker quando previsto no projeto.
+5. Informe o resultado real, as limitações e o que continua pendente. Não converta uma proposta em resultado obtido.
+
+Não escreva uma suíte que apenas reproduza a implementação. Não afirme que um teste passou sem ler a saída e o código de retorno.
+
+exec
+/usr/bin/bash -lc 'cat scripts/ralph/progress.txt scripts/ralph/prd.json scripts/ralph/CLAUDE.md README.md tests/test_acceptance.py; rg --files; git branch --show-current' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+## Codebase Patterns
+- Usar a biblioteca padrão e Decimal para receitas; ler CSVs com UTF-8 e newline="".
+- Resolver caminhos dos dados a partir de pipeline.py, preservando os CSVs de origem na raiz.
+- Durante histórias parciais, selecionar os testes pertinentes; executar toda a suíte ao concluir os artefatos.
+
+# Ralph Progress Log
+Started: Wed Oct  7 12:03:42 UTC 2026
+---
+
+## 2026-10-07 12:21:13 UTC - US-001
+- Implementado inner join em Python padrão; gerado vendas_lojas.csv com 420 vendas e receita Decimal de 931274.06.
+- Documentadas três vendas id_loja=999 excluídas, receita 8120.00, e loja 108 Batel sem vendas, sem linha fictícia.
+- Arquivos alterados: pipeline.py, vendas_lojas.csv, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt.
+- Verificações reais: python pipeline.py informou 420 vendas, 931274.06 incluídos e 8120.00 excluídos; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q tests/test_acceptance.py -k 'join or loja_sem_venda' retornou 3 passed, 3 deselected in 0.03s.
+- sha256sum -c /tmp/ralph-us001-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK após execução.
+- Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker; registro pelo laço externo.
+- Limites: três testes de pivot/gráfico não executados neste recorte, pois dependem de histórias futuras. Sem alteração de UI nesta história.
+- **Learnings for future iterations:**
+  - O cabeçalho das fontes usa receita_brl; conservar os campos de vendas e acrescentar os campos do cadastro, sem repetir id_loja.
+  - Validar unicidade de id_loja no cadastro evita multiplicação silenciosa das vendas.
+  - Não houve falha observada nem intervenção do aluno nesta iteração. Não há CLAUDE.md na raiz; nenhuma atualização necessária em scripts/ralph/CLAUDE.md.
+---
+
+## 2026-10-07 12:22:51 UTC - US-002
+- Implementada agregação Decimal por região e mês no pipeline; gerado pivot_receita.csv com cabeçalho regiao,2026-01,2026-02,2026-03,2026-04,2026-05,2026-06 e quatro regiões em ordem alfabética.
+- Total conservado: 931274.06; região líder: Sudeste, 265077.49. Valores com ponto decimal e duas casas, sem símbolo monetário.
+- Arquivos alterados: pipeline.py, pivot_receita.csv, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt.
+- Verificações reais: python pipeline.py terminou com código 0 e informou pivot 4x6, total e liderança; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q tests/test_acceptance.py -k 'not regiao_lider_e_conclusao' retornou 5 passed, 1 deselected in 0.02s.
+- Verificação adicional por csv, Decimal e expressão regular confirmou todas as células com duas casas, conservação e liderança (código 0). sha256sum -c /tmp/ralph-us002-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK.
+- Limites: o teste combinado de liderança e conclusão HTML depende da US-003 e não foi executado; liderança conferida separadamente. Suíte completa e navegador ficam para as histórias seguintes. Sem mudança de UI nesta rodada.
+- Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker; registro pelo laço externo. A alteração preexistente em ralph-run.log foi preservada.
+- **Learnings for future iterations:**
+  - O campo data das vendas permite obter o mês no formato AAAA-MM pelos primeiros sete caracteres; o pivot mantém os seis meses em ordem fixa e as regiões ordenadas para saída determinística.
+  - O teste regiao_lider_e_conclusao_correspondem_aos_numeros também lê index.html; nesta história, validar liderança separadamente evita depender do gráfico futuro.
+  - Não houve falha de execução observada nem intervenção do aluno. Nenhum novo conhecimento de módulo justificou atualizar scripts/ralph/CLAUDE.md; os padrões gerais de Decimal e CSV já constam acima.
+---
+{
+  "project": "Ralph Lab",
+  "branchName": "ralph/receita-regional",
+  "description": "Pipeline reprodutível de dados sintéticos: inner join com 420 linhas, receita 931274.06, pivot de quatro regiões por seis meses, gráfico estático e testes de invariantes.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Ler entradas e produzir inner join",
+      "description": "Como leitor do relatório, quero juntar vendas às lojas existentes para atribuir receita à região correta.",
+      "acceptanceCriteria": [
+        "Ler os CSVs originais sem editar ou excluir nenhuma linha de origem.",
+        "Gerar vendas_lojas.csv na raiz com exatamente 420 linhas de dados e coluna receita_brl.",
+        "Somar Decimal(receita_brl) e obter 931274.06; excluir três vendas id_loja=999 e documentar 8120.00 fora do relatório.",
+        "Registrar que loja 108 Batel não participa do inner join por não ter vendas.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Verificado: 3 testes pertinentes passaram; compileall passou; hashes das fontes preservados. Pivot e gráfico pendentes das próximas histórias."
+    },
+    {
+      "id": "US-002",
+      "title": "Agregar receita por região e mês",
+      "description": "Como analista, quero conferir receitas mensais sem duplicar vendas.",
+      "acceptanceCriteria": [
+        "Gerar pivot_receita.csv na raiz com cabeçalho exato regiao,2026-01,2026-02,2026-03,2026-04,2026-05,2026-06.",
+        "Entregar quatro regiões e seis meses, números com ponto decimal e duas casas, sem símbolo monetário.",
+        "Conservar o total 931274.06 e identificar Sudeste como líder com 265077.49.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Verificado: 5 testes pertinentes passaram; compileall passou; pivot 4x6 conserva 931274.06 e Sudeste lidera com 265077.49; formato de duas casas e hashes das fontes conferidos. Teste combinado com HTML pendente da US-003."
+    },
+    {
+      "id": "US-003",
+      "title": "Publicar gráfico estático e concluir",
+      "description": "Como leitor, quero visualizar a receita mensal e entender o limite da cobertura.",
+      "acceptanceCriteria": [
+        "Gerar index.html na raiz com gráfico SVG rotulado, seis meses e quatro séries de região.",
+        "Incluir parágrafo de conclusão de pelo menos 300 caracteres ancorado nos números produzidos.",
+        "A conclusão deve distinguir loja sem venda das vendas sem loja e não afirmar que a receita descartada era zero.",
+        "Verificar a página no Chromium do Playwright; dev-browser não está instalado neste ambiente.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Concluir verificações reproduzíveis",
+      "description": "Como aluno, quero saber quando o pipeline está pronto por evidências verificáveis.",
+      "acceptanceCriteria": [
+        "Pelo menos quatro testes reais em tests/test_*.py devem passar em python -m pytest -q.",
+        "Testar contagem e receita do join, cabeçalho e forma do pivot, conservação da receita e gráfico.",
+        "Garantir execução repetida produzindo os mesmos três arquivos e registrar comandos e resultados no progress.txt.",
+        "Só emitir COMPLETE após todas as histórias e verificações concluídas; não inventar falhas nem relatos do aluno.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
+# Ralph Agent Instructions
+
+You are an autonomous coding agent working on a software project.
+
+## Your Task
+
+1. Read the PRD at `prd.json` (in the same directory as this file)
+2. Read the progress log at `progress.txt` (check Codebase Patterns section first)
+3. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
+4. Pick the **highest priority** user story where `passes: false`
+5. Implement that single user story
+6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
+7. Update CLAUDE.md files if you discover reusable patterns (see below)
+8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
+9. Update the PRD to set `passes: true` for the completed story
+10. Append your progress to `progress.txt`
+
+## Progress Report Format
+
+APPEND to progress.txt (never replace, always append):
+```
+## [Date/Time] - [Story ID]
+- What was implemented
+- Files changed
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - Useful context (e.g., "the evaluation panel is in component X")
+---
+```
+
+The learnings section is critical - it helps future iterations avoid repeating mistakes and understand the codebase better.
+
+## Consolidate Patterns
+
+If you discover a **reusable pattern** that future iterations should know, add it to the `## Codebase Patterns` section at the TOP of progress.txt (create it if it doesn't exist). This section should consolidate the most important learnings:
+
+```
+## Codebase Patterns
+- Example: Use `sql<number>` template for aggregations
+- Example: Always use `IF NOT EXISTS` for migrations
+- Example: Export types from actions.ts for UI components
+```
+
+Only add patterns that are **general and reusable**, not story-specific details.
+
+## Update CLAUDE.md Files
+
+Before committing, check if any edited files have learnings worth preserving in nearby CLAUDE.md files:
+
+1. **Identify directories with edited files** - Look at which directories you modified
+2. **Check for existing CLAUDE.md** - Look for CLAUDE.md in those directories or parent directories
+3. **Add valuable learnings** - If you discovered something future developers/agents should know:
+   - API patterns or conventions specific to that module
+   - Gotchas or non-obvious requirements
+   - Dependencies between files
+   - Testing approaches for that area
+   - Configuration or environment requirements
+
+**Examples of good CLAUDE.md additions:**
+- "When modifying X, also update Y to keep them in sync"
+- "This module uses pattern Z for all API calls"
+- "Tests require the dev server running on PORT 3000"
+- "Field names must match the template exactly"
+
+**Do NOT add:**
+- Story-specific implementation details
+- Temporary debugging notes
+- Information already in progress.txt
+
+Only update CLAUDE.md if you have **genuinely reusable knowledge** that would help future work in that directory.
+
+## Quality Requirements
+
+- ALL commits must pass your project's quality checks (typecheck, lint, test)
+- Do NOT commit broken code
+- Keep changes focused and minimal
+- Follow existing code patterns
+
+## Browser Testing (If Available)
+
+For any story that changes UI, verify it works in the browser if you have browser testing tools configured (e.g., via MCP):
+
+1. Navigate to the relevant page
+2. Verify the UI changes work as expected
+3. Take a screenshot if helpful for the progress log
+
+If no browser tools are available, note in your progress report that manual browser verification is needed.
+
+## Stop Condition
+
+After completing a user story, check if ALL stories have `passes: true`.
+
+If ALL stories are complete and passing, reply with:
+<promise>COMPLETE</promise>
+
+If there are still stories with `passes: false`, end your response normally (another iteration will pick up the next story).
+
+## Important
+
+- Work on ONE story per iteration
+- Commit frequently
+- Keep CI green
+- Read the Codebase Patterns section in progress.txt before starting
+
+## Contrato preparado para este exercício
+
+Os testes tests/test_acceptance.py conferem os dados sintéticos originais e não devem ser removidos ou enfraquecidos para passar. Implemente os artefatos necessários para satisfazê-los. Os testes ainda não foram executados: preparar o contrato não é evidência de uma falha do agente. Use Python padrão e Decimal para receitas. Conserve as fontes. Relate falhas reais com a saída original e registre ajustes; não invente intervenções do aluno. O PRD está em scripts/ralph/prd.json e o registro em scripts/ralph/progress.txt a partir da raiz do repositório.
+
+## Execução Codex em Docker
+
+Você já está dentro do Docker; execute Python e pytest diretamente, sem invocar outro Docker. O sandbox permite arquivos do projeto mas protege .git. Não tente gravar .git nem fazer commit: o laço externo registra o progresso por iteração. Atualize prd.json e progress.txt somente após verificações reais. Há testes de aceitação preparados; enquanto histórias futuras não existem, execute os testes pertinentes à história atual e registre o recorte. Ao final, execute toda a suíte e confira os artefatos. Não execute autograde, não altere respostas pessoais e não invente intervenções do aluno. A inspeção em Chromium pode usar Playwright Python, disponível neste ambiente; registre uma captura real, sem acessar serviço pago. A branch já estará escolhida pelo orquestrador.
+# Ralph Lab — contrato preparado
+
+Dados sintéticos da aula, PRD dividido em quatro histórias e seis testes de aceitação. O pipeline será produzido pelo laço, não foi executado nem concluído neste preparo. Não há log fictício de execução.
+
+O script upstream foi estendido com `--tool codex`, usando `codex exec --sandbox workspace-write`. As opções upstream de outros agentes não são necessárias. Referência: https://developers.openai.com/codex/noninteractive.
+
+O aluno executa da raiz do workspace, conforme `../AGENTS.md`:
+
+```bash
+docker compose exec -w /home/alan/mestrado_agents/exercicios/ralph-lab autograde bash -o pipefail -c 'export PATH="$HOME/.local/bin:$PATH"; bash scripts/ralph/ralph.sh --tool codex 10 2>&1 | tee ralph-run.log'
+```
+
+Após cada rodada, confira uma falha real e registre a intervenção feita, se houver. Não altere os CSVs originais nem enfraqueça testes para ajustar números. Critérios: 420 vendas após inner join, receita R$ 931.274,06, pivot de quatro regiões e seis meses, gráfico com conclusão e pelo menos quatro testes verdes.
+
+As três vendas sem loja não entram em região alguma; a loja 108, sem vendas, não ganha receita ou linha fictícia. O relatório não demonstra completude dos dados da empresa.
+
+Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+
+Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
+`pivot_receita.csv`. O pipeline
+usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+mas não participa do inner join porque não tem vendas; não se cria registro
+fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
+(janeiro a junho de 2026), com duas casas decimais e total conservado de
+R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
+na próxima história.
+"""Contrato dos entregáveis; executar após o laço gerar os arquivos."""
+import csv
+from decimal import Decimal
+from pathlib import Path
+import re
+
+ROOT = Path(__file__).resolve().parents[1]
+MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+TOTAL = Decimal("931274.06")
+
+
+def rows(name):
+    with (ROOT / name).open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def test_join_conta_somente_vendas_com_loja_existente():
+    joined = rows("vendas_lojas.csv")
+    assert len(joined) == 420
+    source = rows("vendas.csv")
+    stores = {row["id_loja"] for row in rows("lojas.csv")}
+    expected = {row["id_venda"] for row in source if row["id_loja"] in stores}
+    actual = [row["id_venda"] for row in joined]
+    assert len(actual) == len(set(actual))
+    assert set(actual) == expected
+
+
+def test_join_preserva_receita_sem_vendas_orfas():
+    joined = rows("vendas_lojas.csv")
+    assert sum(Decimal(row["receita_brl"]) for row in joined) == TOTAL
+    assert "999" not in {row["id_loja"] for row in joined}
+    orphan = [row for row in rows("vendas.csv") if row["id_loja"] == "999"]
+    assert len(orphan) == 3
+    assert sum(Decimal(row["receita_brl"]) for row in orphan) == Decimal("8120.00")
+
+
+def test_loja_sem_venda_nao_ganha_registro_ficticio():
+    stores = {row["id_loja"]: row for row in rows("lojas.csv")}
+    assert stores["108"]["nome_loja"] == "Batel"
+    assert "108" not in {row["id_loja"] for row in rows("vendas_lojas.csv")}
+
+
+def test_pivot_tem_quatro_regioes_e_seis_meses():
+    pivot = rows("pivot_receita.csv")
+    assert len(pivot) == 4
+    assert list(pivot[0]) == ["regiao", *MONTHS]
+    assert {row["regiao"] for row in pivot} == {"Centro-Oeste", "Nordeste", "Sudeste", "Sul"}
+
+
+def test_cada_celula_do_pivot_corresponde_as_vendas_da_regiao_e_mes():
+    joined = rows("vendas_lojas.csv")
+    stores = {row["id_loja"]: row["regiao"] for row in rows("lojas.csv")}
+    pivot = rows("pivot_receita.csv")
+    for region in pivot:
+        for month in MONTHS:
+            expected = sum((Decimal(row["receita_brl"]) for row in joined
+                            if stores[row["id_loja"]] == region["regiao"]
+                            and row["data"].startswith(month)), Decimal(0))
+            assert Decimal(region[month]) == expected
+    assert sum(Decimal(row[month]) for row in pivot for month in MONTHS) == TOTAL
+
+
+def test_regiao_lider_e_conclusao_correspondem_aos_numeros():
+    pivot = rows("pivot_receita.csv")
+    totals = {row["regiao"]: sum(Decimal(row[month]) for month in MONTHS) for row in pivot}
+    assert max(totals, key=totals.get) == "Sudeste"
+    assert totals["Sudeste"] == Decimal("265077.49")
+    page = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert re.search(r"<svg\b|<canvas\b", page, re.I)
+    paragraphs = re.findall(r"<p(?:\s[^>]*)?>(.*?)</p>", page, re.I | re.S)
+    assert any(len(re.sub(r"<[^>]+>", "", paragraph).strip()) >= 300 for paragraph in paragraphs)
+    assert "Sudeste" in page
+pipeline.py
+scripts/ralph/progress.txt
+scripts/ralph/prd.json
+scripts/ralph/ralph.sh
+scripts/ralph/CLAUDE.md
+tasks/prd-receita-regional.md
+vendas.csv
+ralph-run.log
+pivot_receita.csv
+lojas.csv
+README.md
+vendas_lojas.csv
+tests/test_acceptance.py
+ralph/receita-regional
+
+exec
+/usr/bin/bash -lc "cat pipeline.py; cat pivot_receita.csv; git status --short; python -c \"import playwright; print('Playwright disponível')\"" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ exited 1 in 0ms:
+"""Produz inner join e receita mensal por região, preservando as fontes."""
+
+import csv
+from decimal import Decimal
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+
+
+def read_csv(path):
+    """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        return list(reader.fieldnames or []), list(reader)
+
+
+def main():
+    sale_fields, sales = read_csv(ROOT / "vendas.csv")
+    store_fields, stores = read_csv(ROOT / "lojas.csv")
+    stores_by_id = {store["id_loja"]: store for store in stores}
+    if len(stores_by_id) != len(stores):
+        raise ValueError("id_loja duplicado no cadastro de lojas")
+
+    joined = []
+    excluded = []
+    for sale in sales:
+        store = stores_by_id.get(sale["id_loja"])
+        if store is None:
+            excluded.append(sale)
+            continue
+        joined.append({**sale, **store})
+
+    fields = sale_fields + [field for field in store_fields if field not in sale_fields]
+    with (ROOT / "vendas_lojas.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(joined)
+
+    total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+    excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
+    revenues = {region: {month: Decimal(0) for month in MONTHS}
+                for region in sorted({row["regiao"] for row in joined})}
+    for row in joined:
+        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
+    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
+        writer.writeheader()
+        for region, monthly in revenues.items():
+            writer.writerow({"regiao": region,
+                             **{month: f"{monthly_value:.2f}" for month, monthly_value in monthly.items()}})
+    regional_totals = {region: sum(monthly.values(), Decimal(0))
+                       for region, monthly in revenues.items()}
+    if sum(regional_totals.values(), Decimal(0)) != total:
+        raise ValueError("Pivot não conserva a receita do inner join")
+    leader = max(regional_totals, key=regional_totals.get)
+    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+    print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+    print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+    participating = {row["id_loja"] for row in joined}
+    for store in stores:
+        if store["id_loja"] not in participating:
+            print(f"Loja sem vendas no inner join: {store['id_loja']} {store['nome_loja']}")
+
+
+if __name__ == "__main__":
+    main()
+regiao,2026-01,2026-02,2026-03,2026-04,2026-05,2026-06
+Centro-Oeste,44144.42,48227.94,41682.96,38855.88,46672.07,38740.70
+Nordeste,46222.85,48042.96,45850.70,44053.04,35371.50,42321.71
+Sudeste,44767.33,48544.11,35816.56,46281.64,41083.43,48584.42
+Sul,27703.36,24985.87,19584.52,22976.51,25094.42,25665.16
+ M ralph-run.log
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'playwright'
+
+exec
+/usr/bin/bash -lc "ls /opt /tmp /usr/local/bin; command -v python python3 uv chromium chromium-browser; rg --files /opt /home/alan/.local /usr/lib 2>/dev/null | rg '(playwright|chromium|python.*bin)' | head -40" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+/opt:
+autograde-idp
+
+/tmp:
+codex-bwrap-synthetic-mount-targets-1000
+codex-daemon-1000
+ia43-proof
+node-compile-cache
+playwright-transform-cache-1000
+ralph-us001-fontes.sha256
+ralph-us002-fontes.sha256
+tmp.tlwCByVl0S
+
+/usr/local/bin:
+2to3
+2to3-3.12
+autograde
+cffi-gen-src
+httpx2
+idle
+idle3
+idle3.12
+idna
+jsonschema
+mcp
+node
+normalizer
+npm
+npx
+pip
+pip3
+pip3.12
+pnpm
+pnpx
+py.test
+pydoc
+pydoc3
+pydoc3.12
+pygmentize
+pytest
+python
+python-config
+python3
+python3-config
+python3.12
+python3.12-config
+uv
+uvicorn
+uvx
+/usr/local/bin/python
+/usr/local/bin/python3
+/home/alan/.local/bin/uv
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/pydoc3.13
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/pip3.13
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/python3.13-config
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/pip
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/idle3.13
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/python3.13
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/bin/pip3
+/usr/lib/python3.11/lib-dynload/_xxsubinterpreters.cpython-311-x86_64-linux-gnu.so
+/home/alan/.local/state/codex-artifacts/venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/_securetransport/__pycache__/bindings.cpython-312.pyc
+/home/alan/.local/state/codex-artifacts/venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/_securetransport/bindings.py
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/lib/tk8.6/demos/bind.tcl
+/home/alan/.local/share/uv/python/cpython-3.13.0-linux-x86_64-gnu/lib/python3.13/site-packages/pip/_vendor/urllib3/contrib/_securetransport/bindings.py
+
+codex
+A história desta rodada é a US-003: gerar o gráfico e a conclusão em HTML. A branch está correta. O Python padrão não encontrou Playwright; vou verificar os ambientes disponíveis para realizar a inspeção exigida no Chromium.
+
+exec
+/usr/bin/bash -lc 'ls -a /tmp/ia43-proof /home/alan/.cache/ms-playwright /home/alan/.local/state/codex-artifacts/venv/bin; /home/alan/.local/state/codex-artifacts/venv/bin/python -c "import playwright; print(playwright.__file__)"; sha256sum vendas.csv lojas.csv > /tmp/ralph-us003-fontes.sha256' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+/home/alan/.cache/ms-playwright:
+.
+..
+.links
+chromium-1243
+chromium_headless_shell-1243
+ffmpeg-1011
+
+/home/alan/.local/state/codex-artifacts/venv/bin:
+.
+..
+Activate.ps1
+activate
+activate.csh
+activate.fish
+pip
+pip3
+pip3.12
+python
+python3
+python3.12
+ruff
+
+/tmp/ia43-proof:
+.
+..
+.agents
+.cache
+.codex
+.local
+project
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'playwright'
+
+exec
+/usr/bin/bash -lc "find /tmp /opt /home/alan -path '*/playwright/__init__.py' -o -name 'chrome' 2>/dev/null" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ exited 1 in 10986ms:
+/home/alan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome
+
+exec
+/usr/bin/bash -lc 'python -m pip install --target /tmp/ralph-playwright playwright' in /home/alan/mestrado_agents/exercicios/ralph-lab
+exec
+/usr/bin/bash -lc 'ls /home/alan/.cache/ms-playwright/chromium-1243/chrome-linux64' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+ABOUT
+MEIPreload
+PrivacySandboxAttestationsPreloaded
+WidevineCdm
+chrome
+chrome-wrapper
+chrome_100_percent.pak
+chrome_200_percent.pak
+chrome_crashpad_handler
+chrome_sandbox
+deb.deps
+hyphen-data
+icudtl.dat
+libEGL.so
+libGLESv2.so
+libvk_swiftshader.so
+libvulkan.so.1
+locales
+product_logo_48.png
+resources
+resources.pak
+rpm.deps
+v8_context_snapshot.bin
+vk_swiftshader_icd.json
+
+ exited 1 in 8326ms:
+WARNING: The directory '/home/alan/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x7f89c41542c0>: Failed to establish a new connection: [Errno -2] Name or service not known')': /simple/playwright/
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x7f89c4154cb0>: Failed to establish a new connection: [Errno -2] Name or service not known')': /simple/playwright/
+WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x7f89c4154ec0>: Failed to establish a new connection: [Errno -2] Name or service not known')': /simple/playwright/
+WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x7f89c41550d0>: Failed to establish a new connection: [Errno -2] Name or service not known')': /simple/playwright/
+WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x7f89c41552e0>: Failed to establish a new connection: [Errno -2] Name or service not known')': /simple/playwright/
+ERROR: Could not find a version that satisfies the requirement playwright (from versions: none)
+ERROR: No matching distribution found for playwright
+
+exec
+/usr/bin/bash -lc "find /tmp/ia43-proof /home/alan/.cache -iname '*playwright*' 2>/dev/null | head -25" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+/home/alan/.cache/claude-cli-nodejs/-home-alan-dev/mcp-logs-plugin-playwright-playwright
+/home/alan/.cache/claude-cli-nodejs/-home-alan-dev-consulta-mayara/mcp-logs-plugin-playwright-playwright
+/home/alan/.cache/claude-cli-nodejs/-home-alan-dev-extrator/mcp-logs-plugin-playwright-playwright
+/home/alan/.cache/claude-cli-nodejs/-home-alan-dev-consulta-consultores/mcp-logs-plugin-playwright-playwright
+/home/alan/.cache/claude-cli-nodejs/-home-alan-dev-usando-azure-openai/mcp-logs-plugin-playwright-playwright
+/home/alan/.cache/claude-cli-nodejs/-home-alan-dev-api-contratacao-consultores/mcp-logs-plugin-playwright-playwright
+/home/alan/.cache/claude-cli-nodejs/-home-alan-dev-front-contratacao-consultores/mcp-logs-plugin-playwright-playwright
+/home/alan/.cache/ms-playwright
+/home/alan/.cache/ms-playwright-mcp
+
+apply patch
+patch: completed
+/home/alan/mestrado_agents/exercicios/ralph-lab/pipeline.py
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+exec
+/usr/bin/bash -lc "python pipeline.py; python -m compileall -q pipeline.py tests; python -m pytest -q; sha256sum -c /tmp/ralph-us003-fontes.sha256; find /usr/local/lib/node_modules /home/alan/.npm /tmp/ia43-proof/.local -maxdepth 7 -iname '*playwright*' 2>/dev/null | head -25" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 681ms:
+Relatório: index.html; gráfico SVG com quatro séries e seis meses
+Pivot: 4 regiões; 6 meses; receita_brl=931274.06
+Região líder: Sudeste; receita_brl=265077.49
+Inner join: 420 vendas; receita_brl=931274.06
+Vendas sem loja: 3; receita excluída=8120.00
+Loja sem vendas no inner join: 108 Batel
+......                                                                   [100%]
+6 passed in 0.02s
+vendas.csv: OK
+lojas.csv: OK
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/.bin/playwright
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/.bin/playwright-core
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright/lib/agents/playwright-test-planner.agent.md
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright/lib/agents/playwright-test-plan.prompt.md
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright/lib/agents/playwright-test-generate.prompt.md
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright/lib/agents/playwright-test-coverage.prompt.md
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright/lib/agents/playwright-test-generator.agent.md
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright/lib/agents/playwright-test-healer.agent.md
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright/lib/agents/playwright-test-heal.prompt.md
+/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright-core
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/.bin/playwright
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/.bin/playwright-core
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright/lib/agents/playwright-test-planner.agent.md
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright/lib/agents/playwright-test-plan.prompt.md
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright/lib/agents/playwright-test-generate.prompt.md
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright/lib/agents/playwright-test-coverage.prompt.md
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright/lib/agents/playwright-test-generator.agent.md
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright/lib/agents/playwright-test-healer.agent.md
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright/lib/agents/playwright-test-heal.prompt.md
+/home/alan/.npm/_npx/6bcb61ec6d5aea22/node_modules/playwright-core
+/home/alan/.npm/_npx/9833c18b2d85bc59/node_modules/.bin/playwright-mcp
+/home/alan/.npm/_npx/9833c18b2d85bc59/node_modules/.bin/playwright
+/home/alan/.npm/_npx/9833c18b2d85bc59/node_modules/.bin/playwright-core
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+exec
+/usr/bin/bash -lc "mkdir -p artifacts; node <<'JS'
+const { chromium } = require('/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright');
+(async () => {
+ const browser = await chromium.launch({headless:true, executablePath:'/home/alan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome',args:['--no-sandbox']});
+ const page = await browser.newPage({viewport:{width:1280,height:1000}});
+ const errors=[]; page.on('pageerror', e=>errors.push(e.message));
+ await page.goto('file://' + process.cwd() + '/index.html');
+ const result = await page.evaluate(()=>({title:document.title,series:document.querySelectorAll('.serie').length,points:document.querySelectorAll('circle').length,months:[...document.querySelectorAll('svg text')].filter(e=>/"'^2026-0[1-6]$/.test(e.textContent)).length,conclusion:[...document.querySelectorAll('"'p')].at(-1).textContent,svgWidth:document.querySelector('svg').getBoundingClientRect().width}));
+ if(result.series"'!==4 || result.points!==24 || result.months!==6 || result.conclusion.length<300 || errors.length) throw Error(JSON.stringify({result,errors}));
+ await page.screenshot({path:'"'artifacts/receita-regional-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:'artifacts/receita-regional-mobile.png',fullPage:true});
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+ if(overflow) throw Error('Página transborda no celular');
+ console.log(JSON.stringify({browser:await browser.version(),...result,errors,mobileOverflow:overflow}));
+ await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});
+JS" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ exited 1 in 942ms:
+browserType.launch: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /home/alan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-OfWp1k --remote-debugging-pipe --no-startup-window
+<launched> pid=16
+[pid=16][err] [16:16:1007/122434.366848:ERROR:third_party/crashpad/crashpad/util/linux/socket.cc:45] setsockopt: Operation not permitted (1)
+Call log:
+[2m  - <launching> /home/alan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-OfWp1k --remote-debugging-pipe --no-startup-window[22m
+[2m  - <launched> pid=16[22m
+[2m  - [pid=16][err] [16:16:1007/122434.366848:ERROR:third_party/crashpad/crashpad/util/linux/socket.cc:45] setsockopt: Operation not permitted (1)[22m
+[2m  - [pid=16] <gracefully close start>[22m
+[2m  - [pid=16] <kill>[22m
+[2m  - [pid=16] <will force kill>[22m
+[2m  - [pid=16] <process did exit: exitCode=null, signal=SIGTRAP>[22m
+[2m  - [pid=16] starting temporary directories cleanup[22m
+[2m  - [pid=16] finished temporary directories cleanup[22m
+[2m  - [pid=16] <gracefully close end>[22m
+
+    at [stdin]:3:33
+    at [stdin]:16:3
+    at [stdin]-wrapper:6:24 {
+  log: [
+    '  - <launching> /home/alan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --no-sandbox --user-data-dir=/tmp/playwright_chromiumdev_profile-OfWp1k --remote-debugging-pipe --no-startup-window',
+    '  - <launched> pid=16',
+    '  - [pid=16][err] [16:16:1007/122434.366848:ERROR:third_party/crashpad/crashpad/util/linux/socket.cc:45] setsockopt: Operation not permitted (1)',
+    '  - [pid=16] <gracefully close start>',
+    '  - [pid=16] <kill>',
+    '  - [pid=16] <will force kill>',
+    '  - [pid=16] <process did exit: exitCode=null, signal=SIGTRAP>',
+    '  - [pid=16] starting temporary directories cleanup',
+    '  - [pid=16] finished temporary directories cleanup',
+    '  - [pid=16] <gracefully close end>'
+  ]
+}
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+codex
+O relatório foi gerado e os seis testes passaram; os hashes dos CSVs originais permanecem iguais. A inspeção visual ainda está pendente: encontrei Playwright para Node, mas o Chromium encerrou ao iniciar com `setsockopt: Operation not permitted`. Vou testar o executável headless disponível.
+
+exec
+/usr/bin/bash -lc "ls /home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-linux; node <<'JS'
+const { chromium }=require('/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright');
+(async()=>{const browser=await chromium.launch({executablePath:'/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-linux/headless_shell',args:['--no-sandbox','--disable-crash-reporter']});const page=await browser.newPage();await page.goto('file://'+process.cwd()+'/index.html');await page.screenshot({path:'artifacts/receita-regional.png',fullPage:true});console.log(await page.title());await browser.close()})().catch(e=>{console.error(e.message);process.exit(1)});
+JS" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ exited 1 in 224ms:
+ls: cannot access '/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-linux': No such file or directory
+browserType.launch: Failed to launch chromium because executable doesn't exist at /home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-linux/headless_shell
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+exec
+/usr/bin/bash -lc 'rg --files /home/alan/.cache/ms-playwright/chromium_headless_shell-1243 | head -10' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/DEPENDENCIES_VALIDATED
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/INSTALLATION_COMPLETE
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_command_resources.pak
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_lib_data.pak
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/rpm.deps
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/ABOUT
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/libvulkan.so.1
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/libEGL.so
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/LICENSE.headless_shell
+/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/hyphen-data/hyph-hy.hyb
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+exec
+/usr/bin/bash -lc "node <<'JS'
+const { chromium }=require('/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright');
+(async()=>{const browser=await chromium.launch({executablePath:'/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_shell',args:['--no-sandbox','--disable-crash-reporter']});const page=await browser.newPage({viewport:{width:1280,height:1000}});await page.goto('file://'+process.cwd()+'/index.html');const result=await page.evaluate(()=>({series:document.querySelectorAll('.serie').length,points:document.querySelectorAll('circle').length}));if(result.series"'!==4||result.points!==24)throw Error(JSON.stringify(result));await page.screenshot({path:'"'artifacts/receita-regional-desktop.png',fullPage:true});await page.setViewportSize({width:390,height:844});await page.screenshot({path:'artifacts/receita-regional-mobile.png',fullPage:true});console.log(JSON.stringify({browser:await browser.version(),...result}));await browser.close()})().catch(e=>{console.error(e.message);process.exit(1)});
+JS" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ exited 1 in 412ms:
+browserType.launch: Failed to launch chromium because executable doesn't exist at /home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/headless_shell
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+exec
+/usr/bin/bash -lc 'ls /home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+ABOUT
+LICENSE.headless_shell
+chrome-headless-shell
+deb.deps
+headless_command_resources.pak
+headless_lib_data.pak
+headless_lib_strings.pak
+hyphen-data
+icudtl.dat
+libEGL.so
+libGLESv2.so
+libvk_swiftshader.so
+libvulkan.so.1
+locales
+rpm.deps
+v8_context_snapshot.bin
+vk_swiftshader_icd.json
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+exec
+/usr/bin/bash -lc "node <<'JS'
+const { chromium }=require('/home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright');
+(async()=>{const browser=await chromium.launch({executablePath:'/home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell',args:['--no-sandbox','--disable-crash-reporter']});const page=await browser.newPage({viewport:{width:1280,height:1000}});await page.goto('file://'+process.cwd()+'/index.html');const result=await page.evaluate(()=>({series:document.querySelectorAll('.serie').length,points:document.querySelectorAll('circle').length}));if(result.series"'!==4||result.points!==24)throw Error(JSON.stringify(result));await page.screenshot({path:'"'artifacts/receita-regional-desktop.png',fullPage:true});await page.setViewportSize({width:390,height:844});await page.screenshot({path:'artifacts/receita-regional-mobile.png',fullPage:true});console.log(JSON.stringify({browser:await browser.version(),...result}));await browser.close()})().catch(e=>{console.error(e.message);process.exit(1)});
+JS" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ exited 1 in 394ms:
+browserType.launch: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --no-sandbox --disable-crash-reporter --user-data-dir=/tmp/playwright_chromiumdev_profile-Wd2E5d --remote-debugging-pipe --no-startup-window
+<launched> pid=15
+[pid=15][err] [1007/122504.262779:FATAL:content/browser/sandbox_host_linux.cc:41] Check failed: . shutdown: Operation not permitted (1)
+Call log:
+[2m  - <launching> /home/alan/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --no-sandbox --disable-crash-reporter --user-data-dir=/tmp/playwright_chromiumdev_profile-Wd2E5d --remote-debugging-pipe --no-startup-window[22m
+[2m  - <launched> pid=15[22m
+[2m  - [pid=15][err] [1007/122504.262779:FATAL:content/browser/sandbox_host_linux.cc:41] Check failed: . shutdown: Operation not permitted (1)[22m
+[2m  - [pid=15] <gracefully close start>[22m
+[2m  - [pid=15] <kill>[22m
+[2m  - [pid=15] <will force kill>[22m
+[2m  - [pid=15] <process did exit: exitCode=null, signal=SIGTRAP>[22m
+[2m  - [pid=15] starting temporary directories cleanup[22m
+[2m  - [pid=15] finished temporary directories cleanup[22m
+[2m  - [pid=15] <gracefully close end>[22m
+
+
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+apply patch
+patch: completed
+/home/alan/mestrado_agents/exercicios/ralph-lab/README.md
+diff --git a/README.md b/README.md
+index 3694528a7f6718538b097fdb2f059dcdd82cbe8c..554cd8c222edf17fcadde51c0a516b911c8a0cf2
+--- a/README.md
++++ b/README.md
+@@ -17,7 +17,7 @@
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+ Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
+-`pivot_receita.csv`. O pipeline
++`pivot_receita.csv` e `index.html`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+@@ -25,5 +25,7 @@
+ mas não participa do inner join porque não tem vendas; não se cria registro
+ fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
+ (janeiro a junho de 2026), com duas casas decimais e total conservado de
+-R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
+-na próxima história.
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. Abra `index.html` para consultar
++o gráfico SVG, a tabela mensal e a conclusão sobre cobertura. O HTML é estático
++e não depende de serviços externos. A inspeção em Chromium permanece pendente:
++os executáveis disponíveis encerraram com `Operation not permitted` neste sandbox.
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+exec
+/usr/bin/bash -lc "python <<'PY'
+from pathlib import Path
+from html.parser import HTMLParser
+class ReportParser(HTMLParser):
+    def __init__(self):
+        super().__init__(); self.series=0; self.points=0; self.text=[]
+    def handle_starttag(self, tag, attrs):
+        self.series += tag == 'g' and dict(attrs).get('class') == 'serie'
+        self.points += tag == 'circle'
+    def handle_data(self, text): self.text.append(text)
+p=ReportParser(); p.feed(Path('index.html').read_text()); text=' '.join(p.text)
+assert p.series == 4 and p.points == 24
+assert all(f'2026-{i:02d}' in text for i in range(1,7))
+assert all(value in text for value in ['931.274,06','265.077,49','8.120,00','108 (Batel)'])
+print('HTML conferido: 4 séries, 24 pontos, 6 meses, totais e cobertura presentes.')
+PY
+python -m compileall -q pipeline.py tests
+python -m pytest -q
+sha256sum -c /tmp/ralph-us003-fontes.sha256
+ git diff --stat" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 439ms:
+HTML conferido: 4 séries, 24 pontos, 6 meses, totais e cobertura presentes.
+......                                                                   [100%]
+6 passed in 0.02s
+vendas.csv: OK
+lojas.csv: OK
+ README.md     |    8 +-
+ pipeline.py   |   73 +++
+ ralph-run.log | 1964 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 2042 insertions(+), 3 deletions(-)
+
+diff --git a/README.md b/README.md
+index 3694528a7f6718538b097fdb2f059dcdd82cbe8c..554cd8c222edf17fcadde51c0a516b911c8a0cf2
+--- a/README.md
++++ b/README.md
+@@ -17,7 +17,7 @@
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+ Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
+-`pivot_receita.csv`. O pipeline
++`pivot_receita.csv` e `index.html`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+@@ -25,5 +25,7 @@
+ mas não participa do inner join porque não tem vendas; não se cria registro
+ fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
+ (janeiro a junho de 2026), com duas casas decimais e total conservado de
+-R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
+-na próxima história.
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. Abra `index.html` para consultar
++o gráfico SVG, a tabela mensal e a conclusão sobre cobertura. O HTML é estático
++e não depende de serviços externos. A inspeção em Chromium permanece pendente:
++os executáveis disponíveis encerraram com `Operation not permitted` neste sandbox.
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+codex
+A conferência do HTML confirmou quatro séries, 24 pontos, seis meses e os valores da conclusão. O Chromium headless também falhou com `shutdown: Operation not permitted`, sem produzir captura. Vou registrar essa limitação e manter US-003 como pendente, pois a inspeção no navegador é um critério obrigatório.
+
+exec
+/usr/bin/bash -lc "python <<'PY'
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+prd=Path('scripts/ralph/prd.json'); data=json.loads(prd.read_text())
+story=next(s for s in data['userStories'] if s['id']=='US-003')
+story['notes']='Implementados index.html e geração no pipeline; compileall e 6 testes passaram; fontes preservadas e SVG conferido (4 séries, 24 pontos, 6 meses). passes permanece false: Chromium e headless shell encerram com Operation not permitted no sandbox; inspeção visual e captura pendentes.'
+prd.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\\n')
+log=Path('scripts/ralph/progress.txt')
+with log.open('a',encoding='utf-8') as handle:
+    handle.write(f'''\\n## {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')} - US-003
+- Implementados relatório estático index.html, gráfico SVG rotulado com quatro séries e seis meses, tabela acessível e conclusão com mais de 300 caracteres gerados pelo pipeline a partir dos dados agregados.
+- Conclusão informa 420 vendas, R"'$ 931.274,06 incluídos, Sudeste líder com R$ 265.077,49, três vendas sem loja com R$ 8.120,00 excluídos e loja 108 (Batel) cadastrada sem vendas, sem registro fictício.
+- Arquivos alterados: pipeline.py, index.html, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt. ralph-run.log preexistente foi preservado; testes e CSVs originais não foram alterados.
+- Verificações reais: python pipeline.py terminou com código 0; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q retornou 6 passed in 0.02s. Parser HTML confirmou quatro séries, 24 pontos, seis meses e valores da conclusão, código 0. sha256sum -c /tmp/ralph-us003-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK.
+- Falhas reais de ambiente: import playwright no Python padrão e no venv consultado retornou ModuleNotFoundError: No module named '"'playwright'. Tentativa de instalação em /tmp falhou por rede: Failed to establish a new connection: [Errno -2] Name or service not known; ERROR: No matching distribution found for playwright.
+- Ajuste: localizado Playwright Node já instalado em /home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright. Chromium disponível iniciou, mas encerrou com setsockopt: Operation not permitted (1), signal=SIGTRAP. Duas tentativas usaram caminhos incorretos do headless shell e retornaram executable doesn't exist; após localizar chrome-headless-shell, a execução retornou FATAL:content/browser/sandbox_host_linux.cc:41 Check failed: . shutdown: Operation not permitted (1), signal=SIGTRAP.
+- Limites e pendências: nenhuma página foi inspecionada no navegador e nenhuma captura foi produzida. US-003 continua passes=false por esse critério obrigatório; US-004 não foi implementada nesta rodada. Não se emite COMPLETE. Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker, registro pelo laço externo.
+- **Learnings for future iterations:**
+  - HTML pode ser gerado com SVG e tabela pela biblioteca padrão; escapar textos com html.escape e manter Decimal até a apresentação.
+  - A presença dos binários Chromium e do Playwright Node não garante execução neste sandbox: a inicialização falha em operações de socket, mesmo com --no-sandbox. Conferência estrutural não substitui inspeção visual.
+  - Nenhuma intervenção do aluno foi relatada. Não há CLAUDE.md na raiz e não surgiu conhecimento de módulo a acrescentar ao arquivo de instruções scripts/ralph/CLAUDE.md.
+---
+''')
+print('Registro atualizado; US-003 permanece false; US-004 permanece false.')
+PY
+ git status --short" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+Registro atualizado; US-003 permanece false; US-004 permanece false.
+ M README.md
+ M pipeline.py
+ M ralph-run.log
+ M scripts/ralph/prd.json
+ M scripts/ralph/progress.txt
+?? index.html
+
+diff --git a/README.md b/README.md
+index 3694528a7f6718538b097fdb2f059dcdd82cbe8c..554cd8c222edf17fcadde51c0a516b911c8a0cf2
+--- a/README.md
++++ b/README.md
+@@ -17,7 +17,7 @@
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+ Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
+-`pivot_receita.csv`. O pipeline
++`pivot_receita.csv` e `index.html`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+@@ -25,5 +25,7 @@
+ mas não participa do inner join porque não tem vendas; não se cria registro
+ fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
+ (janeiro a junho de 2026), com duas casas decimais e total conservado de
+-R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
+-na próxima história.
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. Abra `index.html` para consultar
++o gráfico SVG, a tabela mensal e a conclusão sobre cobertura. O HTML é estático
++e não depende de serviços externos. A inspeção em Chromium permanece pendente:
++os executáveis disponíveis encerraram com `Operation not permitted` neste sandbox.
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+codex
+Implementado [index.html](/home/alan/mestrado_agents/exercicios/ralph-lab/index.html) com gráfico SVG, tabela e conclusão baseada nos dados.
+
+Validação: **6 testes passaram**, compilação passou e CSVs originais foram preservados.
+
+US-003 permanece pendente: Chromium encerrou com `Operation not permitted`, impedindo inspeção visual e captura. Limitação registrada no PRD e no progresso. Sem commit, conforme contrato do ambiente.
+diff --git a/README.md b/README.md
+index 3694528a7f6718538b097fdb2f059dcdd82cbe8c..554cd8c222edf17fcadde51c0a516b911c8a0cf2
+--- a/README.md
++++ b/README.md
+@@ -17,7 +17,7 @@
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+ Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
+-`pivot_receita.csv`. O pipeline
++`pivot_receita.csv` e `index.html`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+@@ -25,5 +25,7 @@
+ mas não participa do inner join porque não tem vendas; não se cria registro
+ fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
+ (janeiro a junho de 2026), com duas casas decimais e total conservado de
+-R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
+-na próxima história.
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. Abra `index.html` para consultar
++o gráfico SVG, a tabela mensal e a conclusão sobre cobertura. O HTML é estático
++e não depende de serviços externos. A inspeção em Chromium permanece pendente:
++os executáveis disponíveis encerraram com `Operation not permitted` neste sandbox.
+diff --git a/pipeline.py b/pipeline.py
+index dc85925c1ff64825339712d1eede8bdd2e373aaa..4e26f2e418d5b0fd2a475d71c6fe2fdf06cc62f8
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -2,6 +2,7 @@
+ 
+ import csv
+ from decimal import Decimal
++from html import escape
+ from pathlib import Path
+ 
+ 
+@@ -9,6 +10,76 @@
+ MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
++def brl(value):
++    """Formata apenas a apresentação, mantendo os cálculos em Decimal."""
++    return f"{value:,.2f}".replace(",", "_").replace(".", ",").replace("_", ".")
++
++
++def write_report(revenues, total, excluded, excluded_total, stores, joined):
++    """Gera relatório independente de serviços externos a partir da agregação."""
++    totals = {region: sum(values.values(), Decimal(0)) for region, values in revenues.items()}
++    leader = max(totals, key=totals.get)
++    ceiling = (max(value for values in revenues.values() for value in values.values())
++               / Decimal(10000)).to_integral_value(rounding="ROUND_CEILING") * Decimal(10000)
++    colors = ["#2563eb", "#b45309", "#047857", "#a21caf"]
++    parts = ['<svg viewBox="0 0 900 420" role="img" aria-labelledby="chart-title chart-desc">',
++             '<title id="chart-title">Receita mensal por região</title>',
++             '<desc id="chart-desc">Quatro séries de janeiro a junho de 2026. Eixo vertical: receita em reais.</desc>']
++    for step in range(6):
++        value = ceiling * Decimal(step) / Decimal(5)
++        y = 330 - step * 54
++        parts.append(f'<path d="M100 {y} H840" stroke="#d1d5db"/><text x="90" y="{y + 5}" text-anchor="end">{brl(value)}</text>')
++    for index, month in enumerate(MONTHS):
++        parts.append(f'<text x="{100 + index * 148}" y="357" text-anchor="middle">{month}</text>')
++    parts.append('<text x="100" y="30">Receita (R$)</text>')
++    for index, (region, values) in enumerate(revenues.items()):
++        color = colors[index % len(colors)]
++        points = [(100 + month_index * 148, Decimal(330) - value / ceiling * Decimal(270), month, value)
++                  for month_index, (month, value) in enumerate(values.items())]
++        coordinates = " ".join(f"{x},{y:.2f}" for x, y, _, _ in points)
++        parts.append(f'<g class="serie" aria-label="{escape(region)}"><polyline points="{coordinates}" fill="none" stroke="{color}" stroke-width="3"/>')
++        for x, y, month, value in points:
++            parts.append(f'<circle cx="{x}" cy="{y:.2f}" r="5" fill="{color}"><title>{escape(region)} · {month}: R$ {brl(value)}</title></circle>')
++        parts.append(f'</g><text x="{100 + index * 195}" y="399" fill="{color}">{escape(region)}</text>')
++    parts.append('</svg>')
++    participating = {row["id_loja"] for row in joined}
++    idle = "; ".join(f"{store['id_loja']} ({store['nome_loja']})" for store in stores
++                     if store["id_loja"] not in participating)
++    conclusion = (
++        f"Entre janeiro e junho de 2026, o inner join reúne {len(joined)} vendas e conserva "
++        f"R$ {brl(total)} no pivot de {len(revenues)} regiões e seis meses. "
++        f"{leader} lidera a receita acumulada com R$ {brl(totals[leader])}. "
++        f"As {len(excluded)} vendas sem loja cadastrada somam R$ {brl(excluded_total)} e foram "
++        "excluídas: essa receita não é zero e não pode ser atribuída a uma região com estas fontes. "
++        f"Já a loja {idle} está cadastrada, mas não tem vendas nas fontes; "
++        "ela não recebe linha fictícia no inner join. Os dados são sintéticos e o relatório "
++        "descreve apenas a cobertura das fontes disponíveis, sem demonstrar completude dos dados da empresa."
++    )
++    table = '<table><caption>Receita mensal em R$</caption><thead><tr><th>Região</th>'
++    table += ''.join(f'<th scope="col">{month}</th>' for month in MONTHS) + '</tr></thead><tbody>'
++    for region, values in revenues.items():
++        table += f'<tr><th scope="row">{escape(region)}</th>'
++        table += ''.join(f'<td>{brl(value)}</td>' for value in values.values()) + '</tr>'
++    table += '</tbody></table>'
++    page = f'''<!doctype html>
++<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Receita mensal por região</title><style>
++body {{font-family:system-ui,sans-serif;color:#172033;background:#f3f4f6;margin:0;padding:24px}}
++main {{max-width:1000px;margin:auto;background:white;padding:28px;border-radius:12px}}
++h1 {{margin-top:0}} svg {{width:100%;height:auto}} svg text {{font-size:15px}}
++p {{line-height:1.7}} .tabela {{overflow-x:auto}} table {{border-collapse:collapse;width:100%;font-size:14px}}
++th,td {{padding:10px;text-align:right;border-bottom:1px solid #ddd}} th:first-child {{text-align:left}}
++caption {{text-align:left;padding:12px 0;font-weight:bold}}
++@media(max-width:600px) {{body {{padding:8px}} main {{padding:16px}}}}
++</style></head><body><main><h1>Receita mensal por região</h1>
++<p>Dados sintéticos · Janeiro a junho de 2026 · Valores em reais</p>
++{''.join(parts)}<div class="tabela">{table}</div>
++<h2>Conclusão e cobertura</h2><p>{escape(conclusion)}</p>
++</main></body></html>
++'''
++    (ROOT / "index.html").write_text(page, encoding="utf-8")
++
++
+ def read_csv(path):
+     """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+     with path.open(encoding="utf-8", newline="") as handle:
+@@ -55,6 +126,8 @@
+     if sum(regional_totals.values(), Decimal(0)) != total:
+         raise ValueError("Pivot não conserva a receita do inner join")
+     leader = max(regional_totals, key=regional_totals.get)
++    write_report(revenues, total, excluded, excluded_total, stores, joined)
++    print("Relatório: index.html; gráfico SVG com quatro séries e seis meses")
+     print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
+     print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+
+tokens used
+36,146
+Implementado [index.html](/home/alan/mestrado_agents/exercicios/ralph-lab/index.html) com gráfico SVG, tabela e conclusão baseada nos dados.
+
+Validação: **6 testes passaram**, compilação passou e CSVs originais foram preservados.
+
+US-003 permanece pendente: Chromium encerrou com `Operation not permitted`, impedindo inspeção visual e captura. Limitação registrada no PRD e no progresso. Sem commit, conforme contrato do ambiente.

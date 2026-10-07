@@ -48,7 +48,7 @@
       ],
       "priority": 3,
       "passes": false,
-      "notes": ""
+      "notes": "Implementados index.html e geração no pipeline; compileall e 6 testes passaram; fontes preservadas e SVG conferido (4 séries, 24 pontos, 6 meses). passes permanece false: Chromium e headless shell encerram com Operation not permitted no sandbox; inspeção visual e captura pendentes."
     },
     {
       "id": "US-004",

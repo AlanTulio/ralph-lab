@@ -34,3 +34,17 @@ Started: Wed Oct  7 12:03:42 UTC 2026
   - O teste regiao_lider_e_conclusao_correspondem_aos_numeros também lê index.html; nesta história, validar liderança separadamente evita depender do gráfico futuro.
   - Não houve falha de execução observada nem intervenção do aluno. Nenhum novo conhecimento de módulo justificou atualizar scripts/ralph/CLAUDE.md; os padrões gerais de Decimal e CSV já constam acima.
 ---
+
+## 2026-10-07 12:25:47 UTC - US-003
+- Implementados relatório estático index.html, gráfico SVG rotulado com quatro séries e seis meses, tabela acessível e conclusão com mais de 300 caracteres gerados pelo pipeline a partir dos dados agregados.
+- Conclusão informa 420 vendas, R$ 931.274,06 incluídos, Sudeste líder com R$ 265.077,49, três vendas sem loja com R$ 8.120,00 excluídos e loja 108 (Batel) cadastrada sem vendas, sem registro fictício.
+- Arquivos alterados: pipeline.py, index.html, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt. ralph-run.log preexistente foi preservado; testes e CSVs originais não foram alterados.
+- Verificações reais: python pipeline.py terminou com código 0; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q retornou 6 passed in 0.02s. Parser HTML confirmou quatro séries, 24 pontos, seis meses e valores da conclusão, código 0. sha256sum -c /tmp/ralph-us003-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK.
+- Falhas reais de ambiente: import playwright no Python padrão e no venv consultado retornou ModuleNotFoundError: No module named 'playwright'. Tentativa de instalação em /tmp falhou por rede: Failed to establish a new connection: [Errno -2] Name or service not known; ERROR: No matching distribution found for playwright.
+- Ajuste: localizado Playwright Node já instalado em /home/alan/.npm/_npx/705bc6b22212b352/node_modules/playwright. Chromium disponível iniciou, mas encerrou com setsockopt: Operation not permitted (1), signal=SIGTRAP. Duas tentativas usaram caminhos incorretos do headless shell e retornaram executable doesn't exist; após localizar chrome-headless-shell, a execução retornou FATAL:content/browser/sandbox_host_linux.cc:41 Check failed: . shutdown: Operation not permitted (1), signal=SIGTRAP.
+- Limites e pendências: nenhuma página foi inspecionada no navegador e nenhuma captura foi produzida. US-003 continua passes=false por esse critério obrigatório; US-004 não foi implementada nesta rodada. Não se emite COMPLETE. Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker, registro pelo laço externo.
+- **Learnings for future iterations:**
+  - HTML pode ser gerado com SVG e tabela pela biblioteca padrão; escapar textos com html.escape e manter Decimal até a apresentação.
+  - A presença dos binários Chromium e do Playwright Node não garante execução neste sandbox: a inicialização falha em operações de socket, mesmo com --no-sandbox. Conferência estrutural não substitui inspeção visual.
+  - Nenhuma intervenção do aluno foi relatada. Não há CLAUDE.md na raiz e não surgiu conhecimento de módulo a acrescentar ao arquivo de instruções scripts/ralph/CLAUDE.md.
+---
