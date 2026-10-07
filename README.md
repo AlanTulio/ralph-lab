@@ -1,52 +1,26 @@
-# Ralph Lab — contrato preparado
+# Receita mensal por região — Ralph Lab
 
-Dados sintéticos da aula, PRD dividido em quatro histórias e seis testes de aceitação. O pipeline será produzido pelo laço, não foi executado nem concluído neste preparo. Não há log fictício de execução.
+Pipeline produzido pelo laço Ralph com Codex em Docker. As quatro histórias foram concluídas em seis iterações, com oito testes verdes e relatório conferido no Chromium. Os dados são sintéticos da aula; as fontes originais permanecem intactas.
 
-O script upstream foi estendido com `--tool codex`, usando `codex exec --sandbox workspace-write`. As opções upstream de outros agentes não são necessárias. Referência: https://developers.openai.com/codex/noninteractive.
-
-O aluno executa da raiz do workspace, conforme `../AGENTS.md`:
+## Executar e conferir
 
 ```bash
-docker compose exec -w /home/alan/mestrado_agents/exercicios/ralph-lab autograde bash -o pipefail -c 'export PATH="$HOME/.local/bin:$PATH"; bash scripts/ralph/ralph.sh --tool codex 10 2>&1 | tee ralph-run.log'
+python3 pipeline.py
+python3 -m pytest -q
 ```
 
-Após cada rodada, confira uma falha real e registre a intervenção feita, se houver. Não altere os CSVs originais nem enfraqueça testes para ajustar números. Critérios: 420 vendas após inner join, receita R$ 931.274,06, pivot de quatro regiões e seis meses, gráfico com conclusão e pelo menos quatro testes verdes.
+Geram-se `vendas_lojas.csv`, `pivot_receita.csv` e `index.html` na raiz. Os cálculos usam Decimal; o inner join inclui 420 vendas e R$ 931.274,06. O pivot tem quatro regiões e seis meses, conserva esse total e identifica Sudeste como líder, R$ 265.077,49.
 
-As três vendas sem loja não entram em região alguma; a loja 108, sem vendas, não ganha receita ou linha fictícia. O relatório não demonstra completude dos dados da empresa.
+As três vendas com id_loja=999 não têm cadastro correspondente: R$ 8.120,00 ficam fora de todas as regiões. A loja 108 (Batel) existe no cadastro, mas não tem vendas e não recebe linha fictícia. O Sul representa lojas com vendas observadas, não todas as lojas cadastradas. Ausência de registros não comprova cobertura completa da operação.
 
-Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+## Laço e evidências
 
-Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
-`pivot_receita.csv` e `index.html`. O pipeline
-usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
-originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
-As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
-relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
-mas não participa do inner join porque não tem vendas; não se cria registro
-fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
-(janeiro a junho de 2026), com duas casas decimais e total conservado de
-R$ 931.274,06. Sudeste lidera com R$ 265.077,49. Abra `index.html` para consultar
-o gráfico SVG, a tabela mensal e a conclusão sobre cobertura. O HTML é estático
-e não depende de serviços externos. A inspeção em Chromium foi executada pelo orquestrador no Docker, fora do
-sandbox interno do Codex. O registro `browser-proof.json` identifica o hash do
-HTML verificado, quatro séries, 24 pontos e ausência de erros de página; a captura
-real `browser-proof.png` foi conferida visualmente. As tentativas anteriores
-no sandbox encerraram com `Operation not permitted`, conforme o registro de progresso.
-
-## Verificação reproduzível
-
-Execute na raiz, dentro do ambiente Docker existente:
+Da raiz do workspace:
 
 ```bash
-python pipeline.py
-python -m compileall -q pipeline.py tests
-python -m pytest -q
+bash scripts/executar-ralph-docker.sh 10
 ```
 
-A suíte contém oito testes: os seis contratos originais e duas verificações
-adicionais em `tests/test_reproducibility.py`. Estas executam o pipeline duas
-vezes em diretório temporário, comparam os três entregáveis byte a byte com
-os arquivos publicados e verificam a preservação das fontes. Também conferem
-as quatro séries, os seis meses e cada valor dos 24 pontos do gráfico contra
-o pivot usando `Decimal`. A captura de navegador permanece como evidência
-visual da US-003; os testes de HTML não substituem essa inspeção.
+O helper constrói o ambiente específico e inicia container efêmero compatível com bubblewrap. Codex usa `--sandbox workspace-write`; o orquestrador grava commits por iteração. Os artefatos estáveis e os hashes das fontes são verificados antes da conclusão. `COMPLETE` só é aceito no resultado final, com todas as histórias aprovadas e pytest verde; a presença da palavra no prompt não basta.
+
+O script `scripts/ralph/check_browser.py` verifica o HTML no Chromium fora do sandbox interno, ainda no Docker, e produz `browser-proof.json` e `browser-proof.png`. O JSON associa a captura ao hash do HTML, quatro séries,24pontos e ausência de erro de página. Falhas reais de ambiente e suas correções estão preservadas em `ralph-run.log` e `scripts/ralph/progress.txt`; a condução foi automática, sem atribuir intervenções manuais ao aluno.

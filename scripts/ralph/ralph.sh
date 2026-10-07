@@ -95,6 +95,9 @@ for i in $(seq 1 $MAX_ITERATIONS); do
     FINAL_FILE="$SCRIPT_DIR/.last-response.txt"
     rm -f "$FINAL_FILE"
     OUTPUT=$(codex exec --sandbox workspace-write --output-last-message "$FINAL_FILE" < "$SCRIPT_DIR/CLAUDE.md" 2>&1 | tee /dev/stderr) || true
+    if [[ -f index.html ]]; then
+      python3 "$SCRIPT_DIR/check_browser.py" || echo "Inspeção Chromium pendente; não inventar evidência."
+    fi
     if ! git diff --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
       git add -A
       git commit -m "feat: registra progresso real da iteração Ralph $i"
