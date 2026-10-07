@@ -48,3 +48,16 @@ Started: Wed Oct  7 12:03:42 UTC 2026
   - A presença dos binários Chromium e do Playwright Node não garante execução neste sandbox: a inicialização falha em operações de socket, mesmo com --no-sandbox. Conferência estrutural não substitui inspeção visual.
   - Nenhuma intervenção do aluno foi relatada. Não há CLAUDE.md na raiz e não surgiu conhecimento de módulo a acrescentar ao arquivo de instruções scripts/ralph/CLAUDE.md.
 ---
+
+## 2026-10-07 12:27:23 UTC - US-003
+- Retomada a história prioritária para verificar o relatório existente no Chromium; nenhuma mudança de implementação foi necessária pela conferência estrutural e pelos testes.
+- Arquivos alterados: scripts/ralph/prd.json e scripts/ralph/progress.txt. Fontes, testes e implementação preservados; ralph-run.log preexistente não foi editado pelo agente.
+- Verificações reais: python pipeline.py terminou com código 0, informou 420 vendas e receita 931274.06; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q retornou 6 passed in 0.02s. Parser HTML confirmou quatro séries, 24 pontos, seis meses e valores da conclusão, código 0.
+- sha256sum -c /tmp/ralph-us003-retry-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK.
+- Falha real: python -c 'import playwright; print(playwright.__file__)' retornou ModuleNotFoundError: No module named 'playwright', código 1. Ajuste: utilizado Playwright Node instalado, com Chromium /home/alan/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome.
+- Tentativa Node retornou código 1 antes de navegar. Saída original em /tmp/ralph-us003-browser.log: browserType.launch: Target page, context or browser has been closed; [15:15:1007/122627.099872:ERROR:third_party/crashpad/crashpad/util/linux/socket.cc:45] setsockopt: Operation not permitted (1); process did exit: exitCode=null, signal=SIGTRAP.
+- Limites: não houve inspeção de página nem captura; conferida ausência de /tmp/ralph-us003-chromium.png. US-003 continua passes=false; US-004 não foi trabalhada nesta iteração. Sem COMPLETE e sem commit, conforme contrato do Docker. Branch observada: ralph/receita-regional.
+- **Learnings for future iterations:**
+  - A repetição confirmou a limitação de Chromium já registrada; é necessário um ambiente que permita sua inicialização para satisfazer a inspeção obrigatória. Não enfraquecer esse critério em função de testes estruturais verdes.
+  - Não houve intervenção do aluno nem novo padrão reutilizável que justificasse alterações em CLAUDE.md ou em Codebase Patterns.
+---

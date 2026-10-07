@@ -48,7 +48,7 @@
       ],
       "priority": 3,
       "passes": false,
-      "notes": "Implementados index.html e geração no pipeline; compileall e 6 testes passaram; fontes preservadas e SVG conferido (4 séries, 24 pontos, 6 meses). passes permanece false: Chromium e headless shell encerram com Operation not permitted no sandbox; inspeção visual e captura pendentes."
+      "notes": "Relatório implementado e revalidado: compileall passou, suíte completa retornou 6 passed in 0.02s, fontes preservadas e HTML com 4 séries, 24 pontos e 6 meses. Nova tentativa Playwright Node/Chromium falhou antes de navegar: setsockopt: Operation not permitted (1), signal=SIGTRAP. Sem captura; passes permanece false por inspeção obrigatória pendente. Saída original desta tentativa: /tmp/ralph-us003-browser.log."
     },
     {
       "id": "US-004",
