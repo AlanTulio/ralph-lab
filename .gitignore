@@ -3,3 +3,6 @@ __pycache__/
 .env
 *.pem
 node_modules/
+
+scripts/ralph/.last-response.txt
+scripts/ralph/.last-branch

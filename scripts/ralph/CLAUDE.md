@@ -106,3 +106,7 @@ If there are still stories with `passes: false`, end your response normally (ano
 ## Contrato preparado para este exercício
 
 Os testes tests/test_acceptance.py conferem os dados sintéticos originais e não devem ser removidos ou enfraquecidos para passar. Implemente os artefatos necessários para satisfazê-los. Os testes ainda não foram executados: preparar o contrato não é evidência de uma falha do agente. Use Python padrão e Decimal para receitas. Conserve as fontes. Relate falhas reais com a saída original e registre ajustes; não invente intervenções do aluno. O PRD está em scripts/ralph/prd.json e o registro em scripts/ralph/progress.txt a partir da raiz do repositório.
+
+## Execução Codex em Docker
+
+Você já está dentro do Docker; execute Python e pytest diretamente, sem invocar outro Docker. O sandbox permite arquivos do projeto mas protege .git. Não tente gravar .git nem fazer commit: o laço externo registra o progresso por iteração. Atualize prd.json e progress.txt somente após verificações reais. Há testes de aceitação preparados; enquanto histórias futuras não existem, execute os testes pertinentes à história atual e registre o recorte. Ao final, execute toda a suíte e confira os artefatos. Não execute autograde, não altere respostas pessoais e não invente intervenções do aluno. A inspeção em Chromium pode usar Playwright Python, disponível neste ambiente; registre uma captura real, sem acessar serviço pago. A branch já estará escolhida pelo orquestrador.

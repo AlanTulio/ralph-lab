@@ -92,14 +92,20 @@ for i in $(seq 1 $MAX_ITERATIONS); do
     OUTPUT=$(cat "$SCRIPT_DIR/prompt.md" | amp --dangerously-allow-all 2>&1 | tee /dev/stderr) || true
   elif [[ "$TOOL" == "codex" ]]; then
     # Codex mantém sandbox de escrita no workspace, sem bypass de permissões.
-    OUTPUT=$(codex exec --sandbox workspace-write < "$SCRIPT_DIR/CLAUDE.md" 2>&1 | tee /dev/stderr) || true
+    FINAL_FILE="$SCRIPT_DIR/.last-response.txt"
+    rm -f "$FINAL_FILE"
+    OUTPUT=$(codex exec --sandbox workspace-write --output-last-message "$FINAL_FILE" < "$SCRIPT_DIR/CLAUDE.md" 2>&1 | tee /dev/stderr) || true
+    if ! git diff --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+      git add -A
+      git commit -m "feat: registra progresso real da iteração Ralph $i"
+    fi
   else
     # Claude Code: use --dangerously-skip-permissions for autonomous operation, --print for output
     OUTPUT=$(claude --dangerously-skip-permissions --print < "$SCRIPT_DIR/CLAUDE.md" 2>&1 | tee /dev/stderr) || true
   fi
   
   # Check for completion signal
-  if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>"; then
+  if [[ -f "${FINAL_FILE:-/dev/null}" ]] && grep -Fxq "<promise>COMPLETE</promise>" "$FINAL_FILE" && jq -e 'all(.userStories[]; .passes == true)' "$PRD_FILE" >/dev/null && python3 -m pytest -q; then
     echo ""
     echo "Ralph completed all tasks!"
     echo "Completed at iteration $i of $MAX_ITERATIONS"
