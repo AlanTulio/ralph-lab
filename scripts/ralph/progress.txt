@@ -20,3 +20,17 @@ Started: Wed Oct  7 12:03:42 UTC 2026
   - Validar unicidade de id_loja no cadastro evita multiplicação silenciosa das vendas.
   - Não houve falha observada nem intervenção do aluno nesta iteração. Não há CLAUDE.md na raiz; nenhuma atualização necessária em scripts/ralph/CLAUDE.md.
 ---
+
+## 2026-10-07 12:22:51 UTC - US-002
+- Implementada agregação Decimal por região e mês no pipeline; gerado pivot_receita.csv com cabeçalho regiao,2026-01,2026-02,2026-03,2026-04,2026-05,2026-06 e quatro regiões em ordem alfabética.
+- Total conservado: 931274.06; região líder: Sudeste, 265077.49. Valores com ponto decimal e duas casas, sem símbolo monetário.
+- Arquivos alterados: pipeline.py, pivot_receita.csv, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt.
+- Verificações reais: python pipeline.py terminou com código 0 e informou pivot 4x6, total e liderança; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q tests/test_acceptance.py -k 'not regiao_lider_e_conclusao' retornou 5 passed, 1 deselected in 0.02s.
+- Verificação adicional por csv, Decimal e expressão regular confirmou todas as células com duas casas, conservação e liderança (código 0). sha256sum -c /tmp/ralph-us002-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK.
+- Limites: o teste combinado de liderança e conclusão HTML depende da US-003 e não foi executado; liderança conferida separadamente. Suíte completa e navegador ficam para as histórias seguintes. Sem mudança de UI nesta rodada.
+- Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker; registro pelo laço externo. A alteração preexistente em ralph-run.log foi preservada.
+- **Learnings for future iterations:**
+  - O campo data das vendas permite obter o mês no formato AAAA-MM pelos primeiros sete caracteres; o pivot mantém os seis meses em ordem fixa e as regiões ordenadas para saída determinística.
+  - O teste regiao_lider_e_conclusao_correspondem_aos_numeros também lê index.html; nesta história, validar liderança separadamente evita depender do gráfico futuro.
+  - Não houve falha de execução observada nem intervenção do aluno. Nenhum novo conhecimento de módulo justificou atualizar scripts/ralph/CLAUDE.md; os padrões gerais de Decimal e CSV já constam acima.
+---

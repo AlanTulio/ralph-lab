@@ -1017,3 +1017,1083 @@ US-001 concluída e marcada como `passes: true`.
 - Progresso atualizado. Sem commit, conforme o contrato.
 
 US-002 a US-004 permanecem pendentes.
+[ralph/receita-regional 5575c72] feat: registra progresso real da iteração Ralph 1
+ 6 files changed, 1523 insertions(+), 2 deletions(-)
+ create mode 100644 pipeline.py
+ create mode 100644 ralph-run.log
+ create mode 100644 scripts/ralph/progress.txt
+ create mode 100644 vendas_lojas.csv
+Iteration 1 complete. Continuing...
+
+===============================================================
+  Ralph Iteration 2 of 6 (codex)
+===============================================================
+Reading prompt from stdin...
+OpenAI Codex v0.160.1
+--------
+workdir: /home/alan/mestrado_agents/exercicios/ralph-lab
+model: gpt-6.1-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: none
+reasoning summaries: none
+session id: 01a1164f-abbb-7a03-86c2-8d577991bcec
+--------
+user
+# Ralph Agent Instructions
+
+You are an autonomous coding agent working on a software project.
+
+## Your Task
+
+1. Read the PRD at `prd.json` (in the same directory as this file)
+2. Read the progress log at `progress.txt` (check Codebase Patterns section first)
+3. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
+4. Pick the **highest priority** user story where `passes: false`
+5. Implement that single user story
+6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
+7. Update CLAUDE.md files if you discover reusable patterns (see below)
+8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
+9. Update the PRD to set `passes: true` for the completed story
+10. Append your progress to `progress.txt`
+
+## Progress Report Format
+
+APPEND to progress.txt (never replace, always append):
+```
+## [Date/Time] - [Story ID]
+- What was implemented
+- Files changed
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - Useful context (e.g., "the evaluation panel is in component X")
+---
+```
+
+The learnings section is critical - it helps future iterations avoid repeating mistakes and understand the codebase better.
+
+## Consolidate Patterns
+
+If you discover a **reusable pattern** that future iterations should know, add it to the `## Codebase Patterns` section at the TOP of progress.txt (create it if it doesn't exist). This section should consolidate the most important learnings:
+
+```
+## Codebase Patterns
+- Example: Use `sql<number>` template for aggregations
+- Example: Always use `IF NOT EXISTS` for migrations
+- Example: Export types from actions.ts for UI components
+```
+
+Only add patterns that are **general and reusable**, not story-specific details.
+
+## Update CLAUDE.md Files
+
+Before committing, check if any edited files have learnings worth preserving in nearby CLAUDE.md files:
+
+1. **Identify directories with edited files** - Look at which directories you modified
+2. **Check for existing CLAUDE.md** - Look for CLAUDE.md in those directories or parent directories
+3. **Add valuable learnings** - If you discovered something future developers/agents should know:
+   - API patterns or conventions specific to that module
+   - Gotchas or non-obvious requirements
+   - Dependencies between files
+   - Testing approaches for that area
+   - Configuration or environment requirements
+
+**Examples of good CLAUDE.md additions:**
+- "When modifying X, also update Y to keep them in sync"
+- "This module uses pattern Z for all API calls"
+- "Tests require the dev server running on PORT 3000"
+- "Field names must match the template exactly"
+
+**Do NOT add:**
+- Story-specific implementation details
+- Temporary debugging notes
+- Information already in progress.txt
+
+Only update CLAUDE.md if you have **genuinely reusable knowledge** that would help future work in that directory.
+
+## Quality Requirements
+
+- ALL commits must pass your project's quality checks (typecheck, lint, test)
+- Do NOT commit broken code
+- Keep changes focused and minimal
+- Follow existing code patterns
+
+## Browser Testing (If Available)
+
+For any story that changes UI, verify it works in the browser if you have browser testing tools configured (e.g., via MCP):
+
+1. Navigate to the relevant page
+2. Verify the UI changes work as expected
+3. Take a screenshot if helpful for the progress log
+
+If no browser tools are available, note in your progress report that manual browser verification is needed.
+
+## Stop Condition
+
+After completing a user story, check if ALL stories have `passes: true`.
+
+If ALL stories are complete and passing, reply with:
+<promise>COMPLETE</promise>
+
+If there are still stories with `passes: false`, end your response normally (another iteration will pick up the next story).
+
+## Important
+
+- Work on ONE story per iteration
+- Commit frequently
+- Keep CI green
+- Read the Codebase Patterns section in progress.txt before starting
+
+## Contrato preparado para este exercício
+
+Os testes tests/test_acceptance.py conferem os dados sintéticos originais e não devem ser removidos ou enfraquecidos para passar. Implemente os artefatos necessários para satisfazê-los. Os testes ainda não foram executados: preparar o contrato não é evidência de uma falha do agente. Use Python padrão e Decimal para receitas. Conserve as fontes. Relate falhas reais com a saída original e registre ajustes; não invente intervenções do aluno. O PRD está em scripts/ralph/prd.json e o registro em scripts/ralph/progress.txt a partir da raiz do repositório.
+
+## Execução Codex em Docker
+
+Você já está dentro do Docker; execute Python e pytest diretamente, sem invocar outro Docker. O sandbox permite arquivos do projeto mas protege .git. Não tente gravar .git nem fazer commit: o laço externo registra o progresso por iteração. Atualize prd.json e progress.txt somente após verificações reais. Há testes de aceitação preparados; enquanto histórias futuras não existem, execute os testes pertinentes à história atual e registre o recorte. Ao final, execute toda a suíte e confira os artefatos. Não execute autograde, não altere respostas pessoais e não invente intervenções do aluno. A inspeção em Chromium pode usar Playwright Python, disponível neste ambiente; registre uma captura real, sem acessar serviço pago. A branch já estará escolhida pelo orquestrador.
+
+warning: Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.
+codex
+Vou ler o PRD e o registro, implementar a história pendente de maior prioridade e validar o recorte correspondente. Conforme as instruções deste ambiente, não farei commit nem alterarei a branch.
+
+exec
+/usr/bin/bash -lc "pwd; rg --files -g 'AGENTS.md' -g 'CLAUDE.md' -g 'prd.json' -g 'progress.txt' -g 'test*' -g 'README*' -g 'pyproject.toml' -g 'requirements*'" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+/home/alan/mestrado_agents/exercicios/ralph-lab
+README.md
+scripts/ralph/progress.txt
+scripts/ralph/prd.json
+scripts/ralph/CLAUDE.md
+tests/test_acceptance.py
+
+exec
+/usr/bin/bash -lc 'cat scripts/ralph/prd.json; cat scripts/ralph/progress.txt; cat /home/alan/.agents/skills/evidence-review/SKILL.md' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+{
+  "project": "Ralph Lab",
+  "branchName": "ralph/receita-regional",
+  "description": "Pipeline reprodutível de dados sintéticos: inner join com 420 linhas, receita 931274.06, pivot de quatro regiões por seis meses, gráfico estático e testes de invariantes.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Ler entradas e produzir inner join",
+      "description": "Como leitor do relatório, quero juntar vendas às lojas existentes para atribuir receita à região correta.",
+      "acceptanceCriteria": [
+        "Ler os CSVs originais sem editar ou excluir nenhuma linha de origem.",
+        "Gerar vendas_lojas.csv na raiz com exatamente 420 linhas de dados e coluna receita_brl.",
+        "Somar Decimal(receita_brl) e obter 931274.06; excluir três vendas id_loja=999 e documentar 8120.00 fora do relatório.",
+        "Registrar que loja 108 Batel não participa do inner join por não ter vendas.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Verificado: 3 testes pertinentes passaram; compileall passou; hashes das fontes preservados. Pivot e gráfico pendentes das próximas histórias."
+    },
+    {
+      "id": "US-002",
+      "title": "Agregar receita por região e mês",
+      "description": "Como analista, quero conferir receitas mensais sem duplicar vendas.",
+      "acceptanceCriteria": [
+        "Gerar pivot_receita.csv na raiz com cabeçalho exato regiao,2026-01,2026-02,2026-03,2026-04,2026-05,2026-06.",
+        "Entregar quatro regiões e seis meses, números com ponto decimal e duas casas, sem símbolo monetário.",
+        "Conservar o total 931274.06 e identificar Sudeste como líder com 265077.49.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Publicar gráfico estático e concluir",
+      "description": "Como leitor, quero visualizar a receita mensal e entender o limite da cobertura.",
+      "acceptanceCriteria": [
+        "Gerar index.html na raiz com gráfico SVG rotulado, seis meses e quatro séries de região.",
+        "Incluir parágrafo de conclusão de pelo menos 300 caracteres ancorado nos números produzidos.",
+        "A conclusão deve distinguir loja sem venda das vendas sem loja e não afirmar que a receita descartada era zero.",
+        "Verificar a página no Chromium do Playwright; dev-browser não está instalado neste ambiente.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Concluir verificações reproduzíveis",
+      "description": "Como aluno, quero saber quando o pipeline está pronto por evidências verificáveis.",
+      "acceptanceCriteria": [
+        "Pelo menos quatro testes reais em tests/test_*.py devem passar em python -m pytest -q.",
+        "Testar contagem e receita do join, cabeçalho e forma do pivot, conservação da receita e gráfico.",
+        "Garantir execução repetida produzindo os mesmos três arquivos e registrar comandos e resultados no progress.txt.",
+        "Só emitir COMPLETE após todas as histórias e verificações concluídas; não inventar falhas nem relatos do aluno.",
+        "Typecheck passes: python -m compileall -q pipeline.py tests",
+        "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}
+## Codebase Patterns
+- Usar a biblioteca padrão e Decimal para receitas; ler CSVs com UTF-8 e newline="".
+- Resolver caminhos dos dados a partir de pipeline.py, preservando os CSVs de origem na raiz.
+- Durante histórias parciais, selecionar os testes pertinentes; executar toda a suíte ao concluir os artefatos.
+
+# Ralph Progress Log
+Started: Wed Oct  7 12:03:42 UTC 2026
+---
+
+## 2026-10-07 12:21:13 UTC - US-001
+- Implementado inner join em Python padrão; gerado vendas_lojas.csv com 420 vendas e receita Decimal de 931274.06.
+- Documentadas três vendas id_loja=999 excluídas, receita 8120.00, e loja 108 Batel sem vendas, sem linha fictícia.
+- Arquivos alterados: pipeline.py, vendas_lojas.csv, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt.
+- Verificações reais: python pipeline.py informou 420 vendas, 931274.06 incluídos e 8120.00 excluídos; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q tests/test_acceptance.py -k 'join or loja_sem_venda' retornou 3 passed, 3 deselected in 0.03s.
+- sha256sum -c /tmp/ralph-us001-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK após execução.
+- Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker; registro pelo laço externo.
+- Limites: três testes de pivot/gráfico não executados neste recorte, pois dependem de histórias futuras. Sem alteração de UI nesta história.
+- **Learnings for future iterations:**
+  - O cabeçalho das fontes usa receita_brl; conservar os campos de vendas e acrescentar os campos do cadastro, sem repetir id_loja.
+  - Validar unicidade de id_loja no cadastro evita multiplicação silenciosa das vendas.
+  - Não houve falha observada nem intervenção do aluno nesta iteração. Não há CLAUDE.md na raiz; nenhuma atualização necessária em scripts/ralph/CLAUDE.md.
+---
+---
+name: evidence-review
+description: Conferir uma conclusão técnica contra arquivos e saídas reais antes de declarar uma tarefa concluída.
+---
+
+# Conferência de evidências
+
+Use quando o usuário pedir validação de um resultado ou quando uma conclusão técnica depender de execução.
+
+1. Identifique a afirmação e o resultado observável que a sustentaria.
+2. Consulte arquivos e comandos autorizados, preservando credenciais e dados originais.
+3. Diferencie fato, inferência e hipótese; identifique a fonte localizável.
+4. Execute a verificação pertinente em Docker quando previsto no projeto.
+5. Informe o resultado real, as limitações e o que continua pendente. Não converta uma proposta em resultado obtido.
+
+Não escreva uma suíte que apenas reproduza a implementação. Não afirme que um teste passou sem ler a saída e o código de retorno.
+
+exec
+/usr/bin/bash -lc 'cat pipeline.py; cat tests/test_acceptance.py; cat README.md; cat scripts/ralph/CLAUDE.md; git status --short; git branch --show-current' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
+
+import csv
+from decimal import Decimal
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+
+
+def read_csv(path):
+    """Lê cabeçalho e registros sem modificar o arquivo de origem."""
+    with path.open(encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        return list(reader.fieldnames or []), list(reader)
+
+
+def main():
+    sale_fields, sales = read_csv(ROOT / "vendas.csv")
+    store_fields, stores = read_csv(ROOT / "lojas.csv")
+    stores_by_id = {store["id_loja"]: store for store in stores}
+    if len(stores_by_id) != len(stores):
+        raise ValueError("id_loja duplicado no cadastro de lojas")
+
+    joined = []
+    excluded = []
+    for sale in sales:
+        store = stores_by_id.get(sale["id_loja"])
+        if store is None:
+            excluded.append(sale)
+            continue
+        joined.append({**sale, **store})
+
+    fields = sale_fields + [field for field in store_fields if field not in sale_fields]
+    with (ROOT / "vendas_lojas.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(joined)
+
+    total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+    excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
+    print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+    print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+    participating = {row["id_loja"] for row in joined}
+    for store in stores:
+        if store["id_loja"] not in participating:
+            print(f"Loja sem vendas no inner join: {store['id_loja']} {store['nome_loja']}")
+
+
+if __name__ == "__main__":
+    main()
+"""Contrato dos entregáveis; executar após o laço gerar os arquivos."""
+import csv
+from decimal import Decimal
+from pathlib import Path
+import re
+
+ROOT = Path(__file__).resolve().parents[1]
+MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+TOTAL = Decimal("931274.06")
+
+
+def rows(name):
+    with (ROOT / name).open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def test_join_conta_somente_vendas_com_loja_existente():
+    joined = rows("vendas_lojas.csv")
+    assert len(joined) == 420
+    source = rows("vendas.csv")
+    stores = {row["id_loja"] for row in rows("lojas.csv")}
+    expected = {row["id_venda"] for row in source if row["id_loja"] in stores}
+    actual = [row["id_venda"] for row in joined]
+    assert len(actual) == len(set(actual))
+    assert set(actual) == expected
+
+
+def test_join_preserva_receita_sem_vendas_orfas():
+    joined = rows("vendas_lojas.csv")
+    assert sum(Decimal(row["receita_brl"]) for row in joined) == TOTAL
+    assert "999" not in {row["id_loja"] for row in joined}
+    orphan = [row for row in rows("vendas.csv") if row["id_loja"] == "999"]
+    assert len(orphan) == 3
+    assert sum(Decimal(row["receita_brl"]) for row in orphan) == Decimal("8120.00")
+
+
+def test_loja_sem_venda_nao_ganha_registro_ficticio():
+    stores = {row["id_loja"]: row for row in rows("lojas.csv")}
+    assert stores["108"]["nome_loja"] == "Batel"
+    assert "108" not in {row["id_loja"] for row in rows("vendas_lojas.csv")}
+
+
+def test_pivot_tem_quatro_regioes_e_seis_meses():
+    pivot = rows("pivot_receita.csv")
+    assert len(pivot) == 4
+    assert list(pivot[0]) == ["regiao", *MONTHS]
+    assert {row["regiao"] for row in pivot} == {"Centro-Oeste", "Nordeste", "Sudeste", "Sul"}
+
+
+def test_cada_celula_do_pivot_corresponde_as_vendas_da_regiao_e_mes():
+    joined = rows("vendas_lojas.csv")
+    stores = {row["id_loja"]: row["regiao"] for row in rows("lojas.csv")}
+    pivot = rows("pivot_receita.csv")
+    for region in pivot:
+        for month in MONTHS:
+            expected = sum((Decimal(row["receita_brl"]) for row in joined
+                            if stores[row["id_loja"]] == region["regiao"]
+                            and row["data"].startswith(month)), Decimal(0))
+            assert Decimal(region[month]) == expected
+    assert sum(Decimal(row[month]) for row in pivot for month in MONTHS) == TOTAL
+
+
+def test_regiao_lider_e_conclusao_correspondem_aos_numeros():
+    pivot = rows("pivot_receita.csv")
+    totals = {row["regiao"]: sum(Decimal(row[month]) for month in MONTHS) for row in pivot}
+    assert max(totals, key=totals.get) == "Sudeste"
+    assert totals["Sudeste"] == Decimal("265077.49")
+    page = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert re.search(r"<svg\b|<canvas\b", page, re.I)
+    paragraphs = re.findall(r"<p(?:\s[^>]*)?>(.*?)</p>", page, re.I | re.S)
+    assert any(len(re.sub(r"<[^>]+>", "", paragraph).strip()) >= 300 for paragraph in paragraphs)
+    assert "Sudeste" in page
+# Ralph Lab — contrato preparado
+
+Dados sintéticos da aula, PRD dividido em quatro histórias e seis testes de aceitação. O pipeline será produzido pelo laço, não foi executado nem concluído neste preparo. Não há log fictício de execução.
+
+O script upstream foi estendido com `--tool codex`, usando `codex exec --sandbox workspace-write`. As opções upstream de outros agentes não são necessárias. Referência: https://developers.openai.com/codex/noninteractive.
+
+O aluno executa da raiz do workspace, conforme `../AGENTS.md`:
+
+```bash
+docker compose exec -w /home/alan/mestrado_agents/exercicios/ralph-lab autograde bash -o pipefail -c 'export PATH="$HOME/.local/bin:$PATH"; bash scripts/ralph/ralph.sh --tool codex 10 2>&1 | tee ralph-run.log'
+```
+
+Após cada rodada, confira uma falha real e registre a intervenção feita, se houver. Não altere os CSVs originais nem enfraqueça testes para ajustar números. Critérios: 420 vendas após inner join, receita R$ 931.274,06, pivot de quatro regiões e seis meses, gráfico com conclusão e pelo menos quatro testes verdes.
+
+As três vendas sem loja não entram em região alguma; a loja 108, sem vendas, não ganha receita ou linha fictícia. O relatório não demonstra completude dos dados da empresa.
+
+Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+
+Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv`. O pipeline
+usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+mas não participa do inner join porque não tem vendas; não se cria registro
+fictício para ela. Pivot e gráfico serão implementados nas próximas histórias.
+# Ralph Agent Instructions
+
+You are an autonomous coding agent working on a software project.
+
+## Your Task
+
+1. Read the PRD at `prd.json` (in the same directory as this file)
+2. Read the progress log at `progress.txt` (check Codebase Patterns section first)
+3. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
+4. Pick the **highest priority** user story where `passes: false`
+5. Implement that single user story
+6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
+7. Update CLAUDE.md files if you discover reusable patterns (see below)
+8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
+9. Update the PRD to set `passes: true` for the completed story
+10. Append your progress to `progress.txt`
+
+## Progress Report Format
+
+APPEND to progress.txt (never replace, always append):
+```
+## [Date/Time] - [Story ID]
+- What was implemented
+- Files changed
+- **Learnings for future iterations:**
+  - Patterns discovered (e.g., "this codebase uses X for Y")
+  - Gotchas encountered (e.g., "don't forget to update Z when changing W")
+  - Useful context (e.g., "the evaluation panel is in component X")
+---
+```
+
+The learnings section is critical - it helps future iterations avoid repeating mistakes and understand the codebase better.
+
+## Consolidate Patterns
+
+If you discover a **reusable pattern** that future iterations should know, add it to the `## Codebase Patterns` section at the TOP of progress.txt (create it if it doesn't exist). This section should consolidate the most important learnings:
+
+```
+## Codebase Patterns
+- Example: Use `sql<number>` template for aggregations
+- Example: Always use `IF NOT EXISTS` for migrations
+- Example: Export types from actions.ts for UI components
+```
+
+Only add patterns that are **general and reusable**, not story-specific details.
+
+## Update CLAUDE.md Files
+
+Before committing, check if any edited files have learnings worth preserving in nearby CLAUDE.md files:
+
+1. **Identify directories with edited files** - Look at which directories you modified
+2. **Check for existing CLAUDE.md** - Look for CLAUDE.md in those directories or parent directories
+3. **Add valuable learnings** - If you discovered something future developers/agents should know:
+   - API patterns or conventions specific to that module
+   - Gotchas or non-obvious requirements
+   - Dependencies between files
+   - Testing approaches for that area
+   - Configuration or environment requirements
+
+**Examples of good CLAUDE.md additions:**
+- "When modifying X, also update Y to keep them in sync"
+- "This module uses pattern Z for all API calls"
+- "Tests require the dev server running on PORT 3000"
+- "Field names must match the template exactly"
+
+**Do NOT add:**
+- Story-specific implementation details
+- Temporary debugging notes
+- Information already in progress.txt
+
+Only update CLAUDE.md if you have **genuinely reusable knowledge** that would help future work in that directory.
+
+## Quality Requirements
+
+- ALL commits must pass your project's quality checks (typecheck, lint, test)
+- Do NOT commit broken code
+- Keep changes focused and minimal
+- Follow existing code patterns
+
+## Browser Testing (If Available)
+
+For any story that changes UI, verify it works in the browser if you have browser testing tools configured (e.g., via MCP):
+
+1. Navigate to the relevant page
+2. Verify the UI changes work as expected
+3. Take a screenshot if helpful for the progress log
+
+If no browser tools are available, note in your progress report that manual browser verification is needed.
+
+## Stop Condition
+
+After completing a user story, check if ALL stories have `passes: true`.
+
+If ALL stories are complete and passing, reply with:
+<promise>COMPLETE</promise>
+
+If there are still stories with `passes: false`, end your response normally (another iteration will pick up the next story).
+
+## Important
+
+- Work on ONE story per iteration
+- Commit frequently
+- Keep CI green
+- Read the Codebase Patterns section in progress.txt before starting
+
+## Contrato preparado para este exercício
+
+Os testes tests/test_acceptance.py conferem os dados sintéticos originais e não devem ser removidos ou enfraquecidos para passar. Implemente os artefatos necessários para satisfazê-los. Os testes ainda não foram executados: preparar o contrato não é evidência de uma falha do agente. Use Python padrão e Decimal para receitas. Conserve as fontes. Relate falhas reais com a saída original e registre ajustes; não invente intervenções do aluno. O PRD está em scripts/ralph/prd.json e o registro em scripts/ralph/progress.txt a partir da raiz do repositório.
+
+## Execução Codex em Docker
+
+Você já está dentro do Docker; execute Python e pytest diretamente, sem invocar outro Docker. O sandbox permite arquivos do projeto mas protege .git. Não tente gravar .git nem fazer commit: o laço externo registra o progresso por iteração. Atualize prd.json e progress.txt somente após verificações reais. Há testes de aceitação preparados; enquanto histórias futuras não existem, execute os testes pertinentes à história atual e registre o recorte. Ao final, execute toda a suíte e confira os artefatos. Não execute autograde, não altere respostas pessoais e não invente intervenções do aluno. A inspeção em Chromium pode usar Playwright Python, disponível neste ambiente; registre uma captura real, sem acessar serviço pago. A branch já estará escolhida pelo orquestrador.
+ M ralph-run.log
+ralph/receita-regional
+
+codex
+A história atual é a US-002: gerar o pivot por região e mês. A branch está correta. Usarei a skill `evidence-review` para conferir os resultados reais; o teste que combina liderança regional e HTML ficará para a história do gráfico, com a liderança validada separadamente nesta rodada.
+
+exec
+/usr/bin/bash -lc "sha256sum vendas.csv lojas.csv > /tmp/ralph-us002-fontes.sha256; head -n 2 vendas.csv; rg --files -g 'CLAUDE.md' -g 'AGENTS.md' .." in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+id_venda,data,id_loja,categoria,unidades,receita_brl
+V00001,2026-01-13,101,Bebidas,102,4406.88
+../AGENTS.md
+../codex-artifacts/instructions/AGENTS.md
+../ralph-lab/scripts/ralph/CLAUDE.md
+../TemplateLatexIDP/CLAUDE.md
+../TemplateLatexIDP/AGENTS.md
+
+apply patch
+patch: completed
+/home/alan/mestrado_agents/exercicios/ralph-lab/pipeline.py
+diff --git a/pipeline.py b/pipeline.py
+index 0e66016d1193099a252bbef53d1182580a93e8c3..e4c971a95fbad82ffab009464004c704487c6344
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -1,4 +1,4 @@
+-"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
++"""Produz inner join e receita mensal por região, preservando as fontes."""
+ 
+ import csv
+ from decimal import Decimal
+@@ -6,6 +6,7 @@
+ 
+ 
+ ROOT = Path(__file__).resolve().parent
++MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
+ def read_csv(path):
+@@ -39,6 +40,23 @@
+ 
+     total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+     excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
++    revenues = {region: {month: Decimal(0) for month in MONTHS}
++                for region in sorted({row["regiao"] for row in joined})}
++    for row in joined:
++        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
++    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
++        writer.writeheader()
++        for region, monthly in revenues.items():
++            writer.writerow({"regiao": region,
++                             **{month: f"monthly_value:.2f" for month, monthly_value in monthly.items()}})
++    regional_totals = {region: sum(monthly.values(), Decimal(0))
++                       for region, monthly in revenues.items()}
++    if sum(regional_totals.values(), Decimal(0)) != total:
++        raise ValueError("Pivot não conserva a receita do inner join")
++    leader = max(regional_totals, key=regional_totals.get)
++    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
++    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+     print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+     participating = {row["id_loja"] for row in joined}
+
+diff --git a/pipeline.py b/pipeline.py
+index 0e66016d1193099a252bbef53d1182580a93e8c3..e4c971a95fbad82ffab009464004c704487c6344
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -1,4 +1,4 @@
+-"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
++"""Produz inner join e receita mensal por região, preservando as fontes."""
+ 
+ import csv
+ from decimal import Decimal
+@@ -6,6 +6,7 @@
+ 
+ 
+ ROOT = Path(__file__).resolve().parent
++MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
+ def read_csv(path):
+@@ -39,6 +40,23 @@
+ 
+     total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+     excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
++    revenues = {region: {month: Decimal(0) for month in MONTHS}
++                for region in sorted({row["regiao"] for row in joined})}
++    for row in joined:
++        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
++    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
++        writer.writeheader()
++        for region, monthly in revenues.items():
++            writer.writerow({"regiao": region,
++                             **{month: f"monthly_value:.2f" for month, monthly_value in monthly.items()}})
++    regional_totals = {region: sum(monthly.values(), Decimal(0))
++                       for region, monthly in revenues.items()}
++    if sum(regional_totals.values(), Decimal(0)) != total:
++        raise ValueError("Pivot não conserva a receita do inner join")
++    leader = max(regional_totals, key=regional_totals.get)
++    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
++    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+     print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+     participating = {row["id_loja"] for row in joined}
+
+apply patch
+patch: completed
+/home/alan/mestrado_agents/exercicios/ralph-lab/README.md
+/home/alan/mestrado_agents/exercicios/ralph-lab/pipeline.py
+diff --git a/README.md b/README.md
+index 7811232f2544aa99fc43b2e36a39e5236bf35f88..3694528a7f6718538b097fdb2f059dcdd82cbe8c
+--- a/README.md
++++ b/README.md
+@@ -16,10 +16,14 @@
+ 
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+-Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv`. O pipeline
++Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
++`pivot_receita.csv`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+ relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+ mas não participa do inner join porque não tem vendas; não se cria registro
+-fictício para ela. Pivot e gráfico serão implementados nas próximas histórias.
++fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
++(janeiro a junho de 2026), com duas casas decimais e total conservado de
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
++na próxima história.
+diff --git a/pipeline.py b/pipeline.py
+index 0e66016d1193099a252bbef53d1182580a93e8c3..dc85925c1ff64825339712d1eede8bdd2e373aaa
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -1,4 +1,4 @@
+-"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
++"""Produz inner join e receita mensal por região, preservando as fontes."""
+ 
+ import csv
+ from decimal import Decimal
+@@ -6,6 +6,7 @@
+ 
+ 
+ ROOT = Path(__file__).resolve().parent
++MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
+ def read_csv(path):
+@@ -39,6 +40,23 @@
+ 
+     total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+     excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
++    revenues = {region: {month: Decimal(0) for month in MONTHS}
++                for region in sorted({row["regiao"] for row in joined})}
++    for row in joined:
++        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
++    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
++        writer.writeheader()
++        for region, monthly in revenues.items():
++            writer.writerow({"regiao": region,
++                             **{month: f"{monthly_value:.2f}" for month, monthly_value in monthly.items()}})
++    regional_totals = {region: sum(monthly.values(), Decimal(0))
++                       for region, monthly in revenues.items()}
++    if sum(regional_totals.values(), Decimal(0)) != total:
++        raise ValueError("Pivot não conserva a receita do inner join")
++    leader = max(regional_totals, key=regional_totals.get)
++    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
++    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+     print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+     participating = {row["id_loja"] for row in joined}
+
+exec
+/usr/bin/bash -lc "cat ../AGENTS.md; python pipeline.py; python -m compileall -q pipeline.py tests; python -m pytest -q tests/test_acceptance.py -k 'not regiao_lider_e_conclusao'; sha256sum -c /tmp/ralph-us002-fontes.sha256" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 482ms:
+# Repository Guidelines
+
+## Estrutura e fontes
+
+Este diretório contém os entregáveis do aluno, uma pasta por exercício, com o nome exigido pelo enunciado. Os enunciados e YAMLs ficam em `../repos/idp_agentes_ia/exercicios/`; a CLI fica em `../repos/autograde-idp/`. Consulte também `../guia-autograde-claude/`. Não faça commits nem mudanças em arquivos versionados dos repositórios do professor.
+
+## Fluxo de implementação
+
+Antes de implementar, leia integralmente o enunciado e o YAML, incluindo pesos, rubricas, `sub_criterios` e `criterios_avaliacao`. Liste entregáveis e dependências do aluno. Avance nas frentes independentes enquanto aguarda entrevistas. Decisões, opiniões, tempo disponível, dados pessoais e relatos de erros devem vir do aluno; nunca invente evidências ou afirme que ele conferiu algo sem confirmação.
+
+Em entrevistas e grill-me, pergunte sem recomendar uma resposta. Registre as palavras do aluno e separe suas próprias sugestões. Siga as convenções de linguagem, nomes e comandos definidos no exercício; use quatro espaços em Python e caminhos relativos a `Path(__file__).parent` em scripts de evidência.
+
+## Execução e validação
+
+Docker foi solicitado explicitamente e deve executar a CLI e as evidências. Prepare o ambiente com `../scripts/preparar-docker.sh`. Não execute `ralph.sh` ou comandos com `--dangerously-skip-permissions`; cabe ao aluno executá-los.
+
+Salve respostas em `../respostas/ia-X.Y.md`: um título `## [k/N] <pergunta exata>` seguido de uma resposta completa em uma única linha. Da pasta do exercício, execute:
+
+```bash
+python3 ../../respostas/guia-validar_auto.py ia-X.Y --docker > ../../boletins/ia-X.Y.txt 2>&1
+```
+
+Informe a nota de cada item e as justificativas. Corrija falhas reais, espere 30 segundos entre tentativas e respeite o limite documentado de dez tentativas diárias. Corrija e revalide enquanto houver progresso possível; a meta atual é nota estritamente maior que 95 em todos os exercícios, respeitando os limites do serviço. Não submeta: a instrução atual é consultar as notas e notificar quando todas forem maiores que 95. Uma submissão futura exige nova instrução explícita. Nunca invente entrevistas, dados ou decisões para alcançar a meta.
+
+## Privacidade e contribuições
+
+Não versione respostas, boletins ou segredos. Não envie dados pessoais a serviços externos. Projetos profissionais são fontes somente de leitura; não copie código, nomes ou URLs internas. Use commits imperativos e focados nos entregáveis do aluno; descreva validações e limitações nas propostas de mudança.
+Pivot: 4 regiões; 6 meses; receita_brl=931274.06
+Região líder: Sudeste; receita_brl=265077.49
+Inner join: 420 vendas; receita_brl=931274.06
+Vendas sem loja: 3; receita excluída=8120.00
+Loja sem vendas no inner join: 108 Batel
+.....                                                                    [100%]
+5 passed, 1 deselected in 0.02s
+vendas.csv: OK
+lojas.csv: OK
+
+diff --git a/README.md b/README.md
+index 7811232f2544aa99fc43b2e36a39e5236bf35f88..3694528a7f6718538b097fdb2f059dcdd82cbe8c
+--- a/README.md
++++ b/README.md
+@@ -16,10 +16,14 @@
+ 
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+-Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv`. O pipeline
++Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
++`pivot_receita.csv`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+ relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+ mas não participa do inner join porque não tem vendas; não se cria registro
+-fictício para ela. Pivot e gráfico serão implementados nas próximas histórias.
++fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
++(janeiro a junho de 2026), com duas casas decimais e total conservado de
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
++na próxima história.
+diff --git a/pipeline.py b/pipeline.py
+index 0e66016d1193099a252bbef53d1182580a93e8c3..dc85925c1ff64825339712d1eede8bdd2e373aaa
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -1,4 +1,4 @@
+-"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
++"""Produz inner join e receita mensal por região, preservando as fontes."""
+ 
+ import csv
+ from decimal import Decimal
+@@ -6,6 +6,7 @@
+ 
+ 
+ ROOT = Path(__file__).resolve().parent
++MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
+ def read_csv(path):
+@@ -39,6 +40,23 @@
+ 
+     total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+     excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
++    revenues = {region: {month: Decimal(0) for month in MONTHS}
++                for region in sorted({row["regiao"] for row in joined})}
++    for row in joined:
++        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
++    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
++        writer.writeheader()
++        for region, monthly in revenues.items():
++            writer.writerow({"regiao": region,
++                             **{month: f"{monthly_value:.2f}" for month, monthly_value in monthly.items()}})
++    regional_totals = {region: sum(monthly.values(), Decimal(0))
++                       for region, monthly in revenues.items()}
++    if sum(regional_totals.values(), Decimal(0)) != total:
++        raise ValueError("Pivot não conserva a receita do inner join")
++    leader = max(regional_totals, key=regional_totals.get)
++    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
++    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+     print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+     participating = {row["id_loja"] for row in joined}
+
+exec
+/usr/bin/bash -lc 'python -m compileall -q pipeline.py tests' in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "python - <<'PY'
+import csv
+import re
+from decimal import Decimal
+with open('pivot_receita.csv', encoding='utf-8', newline='') as handle:
+    rows = list(csv.DictReader(handle))
+totals = {}
+for row in rows:
+    values = [value for key, value in row.items() if key "'!= '"'regiao']
+    assert all(re.fullmatch(r'\\d+\\.\\d{2}', value) for value in values)
+    totals[row['regiao']] = sum(map(Decimal, values), Decimal(0))
+assert sum(totals.values(), Decimal(0)) == Decimal('931274.06')
+assert max(totals, key=totals.get) == 'Sudeste'
+assert totals['Sudeste'] == Decimal('265077.49')
+print('Formato monetário, conservação e liderança: OK')
+print(totals)
+PY" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+Formato monetário, conservação e liderança: OK
+{'Centro-Oeste': Decimal('258323.97'), 'Nordeste': Decimal('261862.76'), 'Sudeste': Decimal('265077.49'), 'Sul': Decimal('146009.84')}
+
+diff --git a/README.md b/README.md
+index 7811232f2544aa99fc43b2e36a39e5236bf35f88..3694528a7f6718538b097fdb2f059dcdd82cbe8c
+--- a/README.md
++++ b/README.md
+@@ -16,10 +16,14 @@
+ 
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+-Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv`. O pipeline
++Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
++`pivot_receita.csv`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+ relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+ mas não participa do inner join porque não tem vendas; não se cria registro
+-fictício para ela. Pivot e gráfico serão implementados nas próximas histórias.
++fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
++(janeiro a junho de 2026), com duas casas decimais e total conservado de
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
++na próxima história.
+diff --git a/pipeline.py b/pipeline.py
+index 0e66016d1193099a252bbef53d1182580a93e8c3..dc85925c1ff64825339712d1eede8bdd2e373aaa
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -1,4 +1,4 @@
+-"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
++"""Produz inner join e receita mensal por região, preservando as fontes."""
+ 
+ import csv
+ from decimal import Decimal
+@@ -6,6 +6,7 @@
+ 
+ 
+ ROOT = Path(__file__).resolve().parent
++MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
+ def read_csv(path):
+@@ -39,6 +40,23 @@
+ 
+     total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+     excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
++    revenues = {region: {month: Decimal(0) for month in MONTHS}
++                for region in sorted({row["regiao"] for row in joined})}
++    for row in joined:
++        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
++    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
++        writer.writeheader()
++        for region, monthly in revenues.items():
++            writer.writerow({"regiao": region,
++                             **{month: f"{monthly_value:.2f}" for month, monthly_value in monthly.items()}})
++    regional_totals = {region: sum(monthly.values(), Decimal(0))
++                       for region, monthly in revenues.items()}
++    if sum(regional_totals.values(), Decimal(0)) != total:
++        raise ValueError("Pivot não conserva a receita do inner join")
++    leader = max(regional_totals, key=regional_totals.get)
++    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
++    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+     print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+     participating = {row["id_loja"] for row in joined}
+
+codex
+O pivot passou nos dois testes de agregação e os três testes do join continuam passando. A validação separada confirmou o total de 931274.06, Sudeste como líder com 265077.49 e todas as células com duas casas decimais. Os hashes das fontes permanecem iguais. Vou registrar essas evidências e marcar apenas a US-002 como concluída.
+
+exec
+/usr/bin/bash -lc "python - <<'PY'
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+path = Path('scripts/ralph/prd.json')
+prd = json.loads(path.read_text())
+story = next(item for item in prd['userStories'] if item['id'] == 'US-002')
+story['passes'] = True
+story['notes'] = 'Verificado: 5 testes pertinentes passaram; compileall passou; pivot 4x6 conserva 931274.06 e Sudeste lidera com 265077.49; formato de duas casas e hashes das fontes conferidos. Teste combinado com HTML pendente da US-003.'
+path.write_text(json.dumps(prd, ensure_ascii=False, indent=2) + '\\n')
+now = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')
+with Path('scripts/ralph/progress.txt').open('a', encoding='utf-8') as handle:
+    handle.write(f'''\\n## {now} - US-002
+- Implementada agregação Decimal por região e mês no pipeline; gerado pivot_receita.csv com cabeçalho regiao,2026-01,2026-02,2026-03,2026-04,2026-05,2026-06 e quatro regiões em ordem alfabética.
+- Total conservado: 931274.06; região líder: Sudeste, 265077.49. Valores com ponto decimal e duas casas, sem símbolo monetário.
+- Arquivos alterados: pipeline.py, pivot_receita.csv, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt.
+- Verificações reais: python pipeline.py terminou com código 0 e informou pivot 4x6, total e liderança; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q tests/test_acceptance.py -k 'not regiao_lider_e_conclusao' retornou 5 passed, 1 deselected in 0.02s.
+- Verificação adicional por csv, Decimal e expressão regular confirmou todas as células com duas casas, conservação e liderança (código 0). sha256sum -c /tmp/ralph-us002-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK.
+- Limites: o teste combinado de liderança e conclusão HTML depende da US-003 e não foi executado; liderança conferida separadamente. Suíte completa e navegador ficam para as histórias seguintes. Sem mudança de UI nesta rodada.
+- Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker; registro pelo laço externo. A alteração preexistente em ralph-run.log foi preservada.
+- **Learnings for future iterations:**
+  - O campo data das vendas permite obter o mês no formato AAAA-MM pelos primeiros sete caracteres; o pivot mantém os seis meses em ordem fixa e as regiões ordenadas para saída determinística.
+  - O teste regiao_lider_e_conclusao_correspondem_aos_numeros também lê index.html; nesta história, validar liderança separadamente evita depender do gráfico futuro.
+  - Não houve falha de execução observada nem intervenção do aluno. Nenhum novo conhecimento de módulo justificou atualizar scripts/ralph/CLAUDE.md; os padrões gerais de Decimal e CSV já constam acima.
+---
+''')
+PY
+ git diff --stat; git status --short" in /home/alan/mestrado_agents/exercicios/ralph-lab
+ succeeded in 0ms:
+ README.md                  |   8 +-
+ pipeline.py                |  20 +-
+ ralph-run.log              | 896 +++++++++++++++++++++++++++++++++++++++++++++
+ scripts/ralph/prd.json     |   4 +-
+ scripts/ralph/progress.txt |  14 +
+ 5 files changed, 937 insertions(+), 5 deletions(-)
+ M README.md
+ M pipeline.py
+ M ralph-run.log
+ M scripts/ralph/prd.json
+ M scripts/ralph/progress.txt
+?? pivot_receita.csv
+
+diff --git a/README.md b/README.md
+index 7811232f2544aa99fc43b2e36a39e5236bf35f88..3694528a7f6718538b097fdb2f059dcdd82cbe8c
+--- a/README.md
++++ b/README.md
+@@ -16,10 +16,14 @@
+ 
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+-Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv`. O pipeline
++Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
++`pivot_receita.csv`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+ relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+ mas não participa do inner join porque não tem vendas; não se cria registro
+-fictício para ela. Pivot e gráfico serão implementados nas próximas histórias.
++fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
++(janeiro a junho de 2026), com duas casas decimais e total conservado de
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
++na próxima história.
+diff --git a/pipeline.py b/pipeline.py
+index 0e66016d1193099a252bbef53d1182580a93e8c3..dc85925c1ff64825339712d1eede8bdd2e373aaa
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -1,4 +1,4 @@
+-"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
++"""Produz inner join e receita mensal por região, preservando as fontes."""
+ 
+ import csv
+ from decimal import Decimal
+@@ -6,6 +6,7 @@
+ 
+ 
+ ROOT = Path(__file__).resolve().parent
++MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
+ def read_csv(path):
+@@ -39,6 +40,23 @@
+ 
+     total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+     excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
++    revenues = {region: {month: Decimal(0) for month in MONTHS}
++                for region in sorted({row["regiao"] for row in joined})}
++    for row in joined:
++        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
++    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
++        writer.writeheader()
++        for region, monthly in revenues.items():
++            writer.writerow({"regiao": region,
++                             **{month: f"{monthly_value:.2f}" for month, monthly_value in monthly.items()}})
++    regional_totals = {region: sum(monthly.values(), Decimal(0))
++                       for region, monthly in revenues.items()}
++    if sum(regional_totals.values(), Decimal(0)) != total:
++        raise ValueError("Pivot não conserva a receita do inner join")
++    leader = max(regional_totals, key=regional_totals.get)
++    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
++    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+     print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+     participating = {row["id_loja"] for row in joined}
+
+codex
+US-002 concluída: `pivot_receita.csv` gerado com quatro regiões e seis meses, total de **931274.06** e liderança do Sudeste com **265077.49**.
+
+Validação: **5 testes passaram**, `compileall` passou e os hashes das fontes foram preservados. PRD e progresso atualizados.
+
+Gráfico e verificações finais permanecem pendentes. Sem commit, conforme o contrato do ambiente.
+diff --git a/README.md b/README.md
+index 7811232f2544aa99fc43b2e36a39e5236bf35f88..3694528a7f6718538b097fdb2f059dcdd82cbe8c
+--- a/README.md
++++ b/README.md
+@@ -16,10 +16,14 @@
+ 
+ Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+ 
+-Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv`. O pipeline
++Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv` e
++`pivot_receita.csv`. O pipeline
+ usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+ originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+ As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+ relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+ mas não participa do inner join porque não tem vendas; não se cria registro
+-fictício para ela. Pivot e gráfico serão implementados nas próximas histórias.
++fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
++(janeiro a junho de 2026), com duas casas decimais e total conservado de
++R$ 931.274,06. Sudeste lidera com R$ 265.077,49. O gráfico será implementado
++na próxima história.
+diff --git a/pipeline.py b/pipeline.py
+index 0e66016d1193099a252bbef53d1182580a93e8c3..dc85925c1ff64825339712d1eede8bdd2e373aaa
+--- a/pipeline.py
++++ b/pipeline.py
+@@ -1,4 +1,4 @@
+-"""Produz o inner join dos CSVs sintéticos, preservando as fontes."""
++"""Produz inner join e receita mensal por região, preservando as fontes."""
+ 
+ import csv
+ from decimal import Decimal
+@@ -6,6 +6,7 @@
+ 
+ 
+ ROOT = Path(__file__).resolve().parent
++MONTHS = [f"2026-{month:02d}" for month in range(1, 7)]
+ 
+ 
+ def read_csv(path):
+@@ -39,6 +40,23 @@
+ 
+     total = sum((Decimal(row["receita_brl"]) for row in joined), Decimal(0))
+     excluded_total = sum((Decimal(row["receita_brl"]) for row in excluded), Decimal(0))
++    revenues = {region: {month: Decimal(0) for month in MONTHS}
++                for region in sorted({row["regiao"] for row in joined})}
++    for row in joined:
++        revenues[row["regiao"]][row["data"][:7]] += Decimal(row["receita_brl"])
++    with (ROOT / "pivot_receita.csv").open("w", encoding="utf-8", newline="") as handle:
++        writer = csv.DictWriter(handle, fieldnames=["regiao", *MONTHS])
++        writer.writeheader()
++        for region, monthly in revenues.items():
++            writer.writerow({"regiao": region,
++                             **{month: f"{monthly_value:.2f}" for month, monthly_value in monthly.items()}})
++    regional_totals = {region: sum(monthly.values(), Decimal(0))
++                       for region, monthly in revenues.items()}
++    if sum(regional_totals.values(), Decimal(0)) != total:
++        raise ValueError("Pivot não conserva a receita do inner join")
++    leader = max(regional_totals, key=regional_totals.get)
++    print(f"Pivot: {len(revenues)} regiões; {len(MONTHS)} meses; receita_brl={total:.2f}")
++    print(f"Região líder: {leader}; receita_brl={regional_totals[leader]:.2f}")
+     print(f"Inner join: {len(joined)} vendas; receita_brl={total:.2f}")
+     print(f"Vendas sem loja: {len(excluded)}; receita excluída={excluded_total:.2f}")
+     participating = {row["id_loja"] for row in joined}
+
+tokens used
+31,689
+US-002 concluída: `pivot_receita.csv` gerado com quatro regiões e seis meses, total de **931274.06** e liderança do Sudeste com **265077.49**.
+
+Validação: **5 testes passaram**, `compileall` passou e os hashes das fontes foram preservados. PRD e progresso atualizados.
+
+Gráfico e verificações finais permanecem pendentes. Sem commit, conforme o contrato do ambiente.

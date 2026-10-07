@@ -31,8 +31,8 @@
         "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verificado: 5 testes pertinentes passaram; compileall passou; pivot 4x6 conserva 931274.06 e Sudeste lidera com 265077.49; formato de duas casas e hashes das fontes conferidos. Teste combinado com HTML pendente da US-003."
     },
     {
       "id": "US-003",
