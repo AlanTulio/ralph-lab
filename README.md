@@ -15,3 +15,11 @@ Após cada rodada, confira uma falha real e registre a intervenção feita, se h
 As três vendas sem loja não entram em região alguma; a loja 108, sem vendas, não ganha receita ou linha fictícia. O relatório não demonstra completude dos dados da empresa.
 
 Este comando foi preparado e a sintaxe do script foi conferida; o funcionamento da CLI e de seu sandbox no Docker será demonstrado na execução, não presumido a partir deste README.
+
+Execute `python pipeline.py` na raiz para gerar `vendas_lojas.csv`. O pipeline
+usa a biblioteca padrão e soma receitas com `Decimal`, preservando os CSVs
+originais. O inner join inclui 420 vendas, com receita de R$ 931.274,06.
+As três vendas com `id_loja=999`, que somam R$ 8.120,00, ficam fora do
+relatório por não terem loja cadastrada. A loja 108 (Batel) está cadastrada,
+mas não participa do inner join porque não tem vendas; não se cria registro
+fictício para ela. Pivot e gráfico serão implementados nas próximas histórias.

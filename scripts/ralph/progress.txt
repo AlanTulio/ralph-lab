@@ -1,0 +1,22 @@
+## Codebase Patterns
+- Usar a biblioteca padrão e Decimal para receitas; ler CSVs com UTF-8 e newline="".
+- Resolver caminhos dos dados a partir de pipeline.py, preservando os CSVs de origem na raiz.
+- Durante histórias parciais, selecionar os testes pertinentes; executar toda a suíte ao concluir os artefatos.
+
+# Ralph Progress Log
+Started: Wed Oct  7 12:03:42 UTC 2026
+---
+
+## 2026-10-07 12:21:13 UTC - US-001
+- Implementado inner join em Python padrão; gerado vendas_lojas.csv com 420 vendas e receita Decimal de 931274.06.
+- Documentadas três vendas id_loja=999 excluídas, receita 8120.00, e loja 108 Batel sem vendas, sem linha fictícia.
+- Arquivos alterados: pipeline.py, vendas_lojas.csv, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt.
+- Verificações reais: python pipeline.py informou 420 vendas, 931274.06 incluídos e 8120.00 excluídos; python -m compileall -q pipeline.py tests terminou com código 0; python -m pytest -q tests/test_acceptance.py -k 'join or loja_sem_venda' retornou 3 passed, 3 deselected in 0.03s.
+- sha256sum -c /tmp/ralph-us001-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK após execução.
+- Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker; registro pelo laço externo.
+- Limites: três testes de pivot/gráfico não executados neste recorte, pois dependem de histórias futuras. Sem alteração de UI nesta história.
+- **Learnings for future iterations:**
+  - O cabeçalho das fontes usa receita_brl; conservar os campos de vendas e acrescentar os campos do cadastro, sem repetir id_loja.
+  - Validar unicidade de id_loja no cadastro evita multiplicação silenciosa das vendas.
+  - Não houve falha observada nem intervenção do aluno nesta iteração. Não há CLAUDE.md na raiz; nenhuma atualização necessária em scripts/ralph/CLAUDE.md.
+---

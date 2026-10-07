@@ -16,8 +16,8 @@
         "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
       ],
       "priority": 1,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verificado: 3 testes pertinentes passaram; compileall passou; hashes das fontes preservados. Pivot e gráfico pendentes das próximas histórias."
     },
     {
       "id": "US-002",
