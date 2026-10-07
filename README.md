@@ -32,3 +32,21 @@ sandbox interno do Codex. O registro `browser-proof.json` identifica o hash do
 HTML verificado, quatro séries, 24 pontos e ausência de erros de página; a captura
 real `browser-proof.png` foi conferida visualmente. As tentativas anteriores
 no sandbox encerraram com `Operation not permitted`, conforme o registro de progresso.
+
+## Verificação reproduzível
+
+Execute na raiz, dentro do ambiente Docker existente:
+
+```bash
+python pipeline.py
+python -m compileall -q pipeline.py tests
+python -m pytest -q
+```
+
+A suíte contém oito testes: os seis contratos originais e duas verificações
+adicionais em `tests/test_reproducibility.py`. Estas executam o pipeline duas
+vezes em diretório temporário, comparam os três entregáveis byte a byte com
+os arquivos publicados e verificam a preservação das fontes. Também conferem
+as quatro séries, os seis meses e cada valor dos 24 pontos do gráfico contra
+o pivot usando `Decimal`. A captura de navegador permanece como evidência
+visual da US-003; os testes de HTML não substituem essa inspeção.

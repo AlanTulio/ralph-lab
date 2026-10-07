@@ -63,8 +63,8 @@
         "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verificado: compileall código 0; suíte completa 8 passed in 0.10s, preservando seis testes originais. Novo teste executa pipeline duas vezes em diretório temporário e compara três artefatos byte a byte com os publicados; outro confere quatro séries, seis meses e 24 valores do SVG contra o pivot. Duas execuções adicionais na raiz mantiveram hashes dos três artefatos e das fontes, também idênticas ao HEAD. Evidência Chromium existente do orquestrador corresponde ao hash do HTML e captura inspecionada novamente. Sem commit conforme contrato Docker."
     }
   ]
 }

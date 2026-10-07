@@ -74,3 +74,17 @@ Started: Wed Oct  7 12:03:42 UTC 2026
   - Não houve intervenção do aluno ou nova falha de execução nesta iteração. Nenhum conhecimento de módulo justificou atualizar scripts/ralph/CLAUDE.md; manter as falhas históricas no registro.
 ---
 - Conferência adicional: git diff --check global retornou código 2 com saída original `ralph-run.log:5913: new blank line at EOF.` no log preexistente atualizado pelo laço externo. O recorte git diff --check -- README.md scripts/ralph/prd.json scripts/ralph/progress.txt passou com código 0; log externo preservado.
+
+## 2026-10-07 12:30:33 UTC - US-004
+- Adicionados dois testes reais: repetibilidade em diretório temporário com preservação das fontes e comparação byte a byte dos três artefatos publicados; correspondência das quatro séries, seis meses e 24 valores do SVG com o pivot usando Decimal. Os seis testes originais foram preservados.
+- Arquivos alterados: tests/test_reproducibility.py, README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt. Implementação, artefatos e provas de navegador preservados; ralph-run.log externo não foi editado pelo agente.
+- Verificações reais: python pipeline.py retornou código 0 com 420 vendas, receita 931274.06, Sudeste 265077.49, três vendas excluídas somando 8120.00 e loja 108 Batel sem vendas. python -m compileall -q pipeline.py tests retornou código 0; python -m pytest -q retornou 8 passed in 0.10s, código 0.
+- Verificação independente executou python pipeline.py duas vezes adicionais na raiz, comparou SHA-256 antes/depois e terminou com código 0: vendas_lojas.csv=8d1ae8c0ed1e3836f734974e90236b2758dcbf574c5744014af8de0d62ae1d30; pivot_receita.csv=ba9cebeb936b002930dc2086593cf1a54d3f44123967f769551fda2d394f90af; index.html=921b5bcb800e1919a6909820ca7e85dd02b40eb4996e430661d683d415933dea.
+- Fontes preservadas antes/depois e iguais ao conteúdo do HEAD: vendas.csv=185d59af672851e671c8d92075650e8ab5082e4781016e02fddfd787db592acb; lojas.csv=dfa6343978af3738788e4889de42863580c9673b675f481ce426c45932be318a.
+- Evidência existente browser-proof.json do orquestrador confere com o hash do HTML atual; assinatura PNG conferida e browser-proof.png aberta novamente: gráfico, tabela e conclusão legíveis. Não houve nova execução de navegador pelo agente nem alteração de UI.
+- US-004 marcada passes=true após verificações reais; todas as histórias concluídas. Branch observada: ralph/receita-regional. Sem commit ou escrita em .git conforme contrato Docker; registro pelo laço externo.
+- **Learnings for future iterations:**
+  - Repetibilidade deve comparar bytes dos entregáveis e preservação das fontes, além de verificar código de saída; executar cópias em diretório temporário evita modificar as fontes do projeto durante testes.
+  - Os títulos dos pontos SVG permitem conferir valores monetários contra o CSV sem substituir a evidência visual do Chromium.
+  - Não houve falha de execução ou intervenção do aluno nesta iteração. Nenhuma atualização em CLAUDE.md: não existe arquivo na raiz ou em tests; o arquivo scripts/ralph/CLAUDE.md contém instruções do laço e os aprendizados já estão neste registro.
+---
