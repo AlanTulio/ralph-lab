@@ -61,3 +61,16 @@ Started: Wed Oct  7 12:03:42 UTC 2026
   - A repetição confirmou a limitação de Chromium já registrada; é necessário um ambiente que permita sua inicialização para satisfazer a inspeção obrigatória. Não enfraquecer esse critério em função de testes estruturais verdes.
   - Não houve intervenção do aluno nem novo padrão reutilizável que justificasse alterações em CLAUDE.md ou em Codebase Patterns.
 ---
+
+## 2026-10-07 12:28:15 UTC - US-003
+- Concluída a inspeção pendente a partir da evidência real fornecida pelo orquestrador: browser-proof.json registra execução Chromium fora do sandbox interno em 2026-10-07T12:28:02.704158+00:00; browser-proof.png foi aberta e inspecionada pelo agente. Gráfico com quatro séries e seis meses, tabela e conclusão legíveis, sem corte observado na captura.
+- Conferido SHA-256 do index.html atual: 921b5bcb800e1919a6909820ca7e85dd02b40eb4996e430661d683d415933dea, idêntico ao registro. Registro informa 4 séries, 24 pontos e page_errors vazio; arquivo da captura tem assinatura PNG válida. Não se atribui a execução do navegador ao agente nem ao aluno.
+- Arquivos alterados pelo agente: README.md, scripts/ralph/prd.json e scripts/ralph/progress.txt. browser-proof.json e browser-proof.png já estavam presentes, foram preservados como evidências; ralph-run.log preexistente foi preservado. Sem necessidade de alterar implementação ou testes.
+- Verificações reais: python pipeline.py retornou código 0, 420 vendas e receita 931274.06, Sudeste 265077.49, três vendas excluídas com 8120.00 e loja 108 Batel sem vendas. python -m compileall -q pipeline.py tests retornou código 0; python -m pytest -q retornou 6 passed in 0.03s. sha256sum -c /tmp/ralph-us003-atual-fontes.sha256 retornou vendas.csv: OK e lojas.csv: OK.
+- Python Playwright está agora importável em /usr/local/lib/python3.12/site-packages/playwright/__init__.py. Nenhuma nova tentativa de iniciar navegador foi necessária: a evidência do orquestrador corresponde ao artefato atual e foi inspecionada. Os erros históricos não foram apagados nem apresentados como falhas novas.
+- US-003 marcada passes=true após verificações; US-004 permanece pendente, sem emitir COMPLETE. Branch observada: ralph/receita-regional. Sem commit conforme contrato do Docker; registro pelo laço externo.
+- **Learnings for future iterations:**
+  - Evidência de navegador fornecida pelo orquestrador deve ter autoria preservada e hash comparado com o HTML atual antes de ser usada; a captura precisa ser realmente aberta para inspeção.
+  - Não houve intervenção do aluno ou nova falha de execução nesta iteração. Nenhum conhecimento de módulo justificou atualizar scripts/ralph/CLAUDE.md; manter as falhas históricas no registro.
+---
+- Conferência adicional: git diff --check global retornou código 2 com saída original `ralph-run.log:5913: new blank line at EOF.` no log preexistente atualizado pelo laço externo. O recorte git diff --check -- README.md scripts/ralph/prd.json scripts/ralph/progress.txt passou com código 0; log externo preservado.

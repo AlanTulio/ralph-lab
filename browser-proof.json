@@ -1,0 +1,10 @@
+{
+  "executado_por": "orquestrador no Docker, fora do sandbox interno do Codex",
+  "timestamp_utc": "2026-10-07T12:28:02.704158+00:00",
+  "html_sha256": "921b5bcb800e1919a6909820ca7e85dd02b40eb4996e430661d683d415933dea",
+  "series": 4,
+  "pontos": 24,
+  "page_errors": [],
+  "screenshot": "browser-proof.png",
+  "status": "passou"
+}

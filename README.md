@@ -27,5 +27,8 @@ fictício para ela. O pivot agrega a receita em quatro regiões e seis meses
 (janeiro a junho de 2026), com duas casas decimais e total conservado de
 R$ 931.274,06. Sudeste lidera com R$ 265.077,49. Abra `index.html` para consultar
 o gráfico SVG, a tabela mensal e a conclusão sobre cobertura. O HTML é estático
-e não depende de serviços externos. A inspeção em Chromium permanece pendente:
-os executáveis disponíveis encerraram com `Operation not permitted` neste sandbox.
+e não depende de serviços externos. A inspeção em Chromium foi executada pelo orquestrador no Docker, fora do
+sandbox interno do Codex. O registro `browser-proof.json` identifica o hash do
+HTML verificado, quatro séries, 24 pontos e ausência de erros de página; a captura
+real `browser-proof.png` foi conferida visualmente. As tentativas anteriores
+no sandbox encerraram com `Operation not permitted`, conforme o registro de progresso.

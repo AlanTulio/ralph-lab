@@ -47,8 +47,8 @@
         "Tests pass: executar os testes pertinentes; ao final toda a suíte deve passar."
       ],
       "priority": 3,
-      "passes": false,
-      "notes": "Relatório implementado e revalidado: compileall passou, suíte completa retornou 6 passed in 0.02s, fontes preservadas e HTML com 4 séries, 24 pontos e 6 meses. Nova tentativa Playwright Node/Chromium falhou antes de navegar: setsockopt: Operation not permitted (1), signal=SIGTRAP. Sem captura; passes permanece false por inspeção obrigatória pendente. Saída original desta tentativa: /tmp/ralph-us003-browser.log."
+      "passes": true,
+      "notes": "Verificado: pipeline e compileall com código 0; suíte completa 6 passed in 0.03s; fontes preservadas. Inspeção Chromium executada pelo orquestrador fora do sandbox interno, registrada em browser-proof.json (2026-10-07T12:28:02.704158+00:00): 4 séries, 24 pontos, sem erros. SHA-256 confere com index.html atual; browser-proof.png inspecionada visualmente pelo agente, gráfico, tabela e conclusão legíveis."
     },
     {
       "id": "US-004",
